@@ -93,7 +93,7 @@ legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
 
  # Old-Faithful-eruptions-data and several sigma-values
 d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
-xgrid <- seq(er[1], er[2], by = 0.05);    sigmas <- seq(1, 4, length = 4)
+xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
 fit <- lapply(sigmas, function(sig)
    fnhat_ES2013(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
      ranktrafo = J2, sigma = sig))

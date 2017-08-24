@@ -147,7 +147,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'
 #'  # Old-Faithful-eruptions-data and several sigma-values
 #' d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
-#' xgrid <- seq(er[1], er[2], by = 0.05);    sigmas <- seq(1, 4, length = 4)
+#' xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
 #' fit <- lapply(sigmas, function(sig)
 #'    fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
 #'      theta = mean(d), sigma = sig))
@@ -269,7 +269,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'
 #'  # Old-Faithful-eruptions-data and several sigma-values
 #' d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
-#' xgrid <- seq(er[1], er[2], by = 0.05);    sigmas <- seq(1, 4, length = 4)
+#' xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
 #' fit <- lapply(sigmas, function(sig)
 #'    fnhat_ES2013(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
 #'      ranktrafo = J2, sigma = sig))
