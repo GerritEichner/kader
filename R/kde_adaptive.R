@@ -310,7 +310,7 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 
 #' Specialized ``Workhorse'' Function for Kernel Adaptive Density Estimators
 #'
-#' Common spezialized computational ``workhorse'' function to compute the kernel
+#' Common specialized computational ``workhorse'' function to compute the kernel
 #' adaptive density estimators both in eq. (1.6) of Srihera & Stute (2011) and
 #' in eq. (4) of Eichner & Stute (2013) (together with several related
 #' quantities) with a \eqn{\sigma} that minimizes the estimated MSE using an

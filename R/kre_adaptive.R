@@ -176,7 +176,7 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #'               "gaussian", "rectangular" or "epanechnikov", with default
 #'               "gaussian", and may be abbreviated to a unique prefix.
 #'               (Currently, this kernel is also used for the initial,
-#'               non-adaptive Nadaray-Watson regression estimator which enters
+#'               non-adaptive Nadaraya-Watson regression estimator which enters
 #'               into the estimators of bias and variance as described in the
 #'               references.)
 #' @param Sigma Vector of value(s) of the scale parameter \eqn{\sigma}.
@@ -358,7 +358,7 @@ kare <- function(x.points, data, # Someday to be adapted to args. of ksmooth()?
     epanechnikov = epanechnikov,   # kader:::epanechnikov,
     rectangular  = rectangular)    # kader:::rectangular)
 
-  # Select kernel for (non-adaptive) Nadaray-Watson estimator.
+  # Select kernel for (non-adaptive) Nadarya-Watson estimator.
   # Independent choice not yet implemented.
   Knawa <- Kadap
 
