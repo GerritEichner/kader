@@ -15,7 +15,6 @@ Depends: R (>= 3.4.1)
 License: GPL-3
 Encoding: UTF-8
 LazyData: TRUE
-URL: http://www.uni-giessen.de/eichner/
 URL: http://github.com/GerritEichner/kader
 BugReports: http://github.com/GerritEichner/kader/issues
 RoxygenNote: 6.0.1
