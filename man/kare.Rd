@@ -25,7 +25,7 @@ adaptive estimator. This must partially match one of
 "gaussian", "rectangular" or "epanechnikov", with default
 "gaussian", and may be abbreviated to a unique prefix.
 (Currently, this kernel is also used for the initial,
-non-adaptive Nadaray-Watson regression estimator which enters
+non-adaptive Nadaraya-Watson regression estimator which enters
 into the estimators of bias and variance as described in the
 references.)}
 

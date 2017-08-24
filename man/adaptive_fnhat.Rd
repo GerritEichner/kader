@@ -76,7 +76,7 @@ A list of as many lists as elements in \code{x}, each with components
    }
 }
 \description{
-Common spezialized computational ``workhorse'' function to compute the kernel
+Common specialized computational ``workhorse'' function to compute the kernel
 adaptive density estimators both in eq. (1.6) of Srihera & Stute (2011) and
 in eq. (4) of Eichner & Stute (2013) (together with several related
 quantities) with a \eqn{\sigma} that minimizes the estimated MSE using an
@@ -85,7 +85,7 @@ some pre-computed quantities (in addition to the point(s) at which the
 density is to be estimated, the data, etc.). In particular, the estimator of
 \eqn{\theta} (which is typically the arithmetic mean of the data) is
 expected to be already ``contained'' in those pre-computed quantities, which
-increases the computational efficieny.
+increases the computational efficiency.
 }
 \details{
 The computational procedure in this function can be highly iterative because
