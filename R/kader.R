@@ -29,8 +29,8 @@
 #' presented in Eichner, G. (2017): Kader - An R package for nonparametric
 #' kernel adjusted density estimation and regression. In: Ferger, D., et al.
 #' (eds.): From Statistics to Mathematical Finance, Festschrift in Honour of
-#' Winfried Stute. Springer International Publishing, URL
-#' \url{http://dx.doi.org/10.1007/978-3-319-50986-0}.
+#' Winfried Stute. Springer International Publishing. To appear in Oct. 2017.
+#' DOI then (!) 10.1007/978-3-319-50986-0.
 #'
 #' @docType package
 #' @name kader
