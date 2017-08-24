@@ -4,8 +4,8 @@
 ### Functions for computing the adaptive density estimator for "Kernel
 ### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
 ### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23.8.2017 (6./7./10.2.2015 /
-###  21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
+### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24.8.2017
+###  (6./7./10.2.2015 / 21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
 ###*****************************************************************************
 
 #' ``Unified'' Function for Kernel Adaptive Density Estimators
@@ -110,7 +110,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' @references Srihera & Stute (2011) and Eichner (2017): see \link{kader}.
 #'
 #' @examples
-#' require(stats);   require(grDevices)
+#' require(stats);   require(grDevices);    require(datasets)
 #'
 #'  # Simulated N(0,1)-data and one sigma-value
 #' set.seed(2016);     n <- 100;     d <- rnorm(n)
@@ -119,10 +119,12 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'   theta = mean(d), sigma = 1)
 #' print(fit)
 #'
+#' \dontrun{
 #' plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("blue", "black", "red"),
 #'   legend = expression(tilde(f)[n], phi, "data"))
+#' }
 #'
 #'
 #'  # The same data, but several sigma-values
@@ -132,12 +134,15 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'     theta = mean(d), sigma = sig))
 #' print(fit)
 #'
+#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y")
 #' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
 #'   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
-#'   legend = expression(phi, "data", paste(tilde(f)[n], " (in other colors)")))
+#'   legend = expression(phi, "data",
+#'     paste(tilde(f)[n], " (in other colors)")))
+#' }
 #'
 #'
 #'  # Old-Faithful-eruptions-data and several sigma-values
@@ -148,12 +153,15 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'      theta = mean(d), sigma = sig))
 #' print(fit)
 #'
+#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 #' plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 #' rug(d, col = "red")
 #' matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
 #' legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
-#'   legend = expression("R's est.", "data", paste(tilde(f)[n], " (in other colors)")))
+#'   legend = expression("R's est.", "data",
+#'     paste(tilde(f)[n], " (in other colors)")))
+#' }
 #'
 fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
   if(any(is.na(data) | is.infinite(data)))
@@ -225,7 +233,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #' @references Eichner & Stute (2013) and Eichner (2017): see \link{kader}.
 #'
 #' @examples
-#' require(stats);   require(grDevices)
+#' require(stats);   require(grDevices);   require(datasets)
 #'
 #'  # Simulated N(0,1)-data and one sigma-value
 #' set.seed(2016);     n <- 100;     d <- rnorm(n)
@@ -234,10 +242,12 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'   ranktrafo = J2, sigma = 1)
 #' print(fit)
 #'
+#' \dontrun{
 #' plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("blue", "black", "red"),
 #'   legend = expression(hat(f)[n], phi, "data"))
+#' }
 #'
 #'
 #'  # The same data, but several sigma-values
@@ -247,12 +257,14 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'     ranktrafo = J2, sigma = sig))
 #' print(fit)
 #'
+#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y")
 #' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
 #'   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
 #'   legend = expression(phi, "data", paste(hat(f)[n], " (in other colors)")))
+#' }
 #'
 #'
 #'  # Old-Faithful-eruptions-data and several sigma-values
@@ -263,12 +275,15 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'      ranktrafo = J2, sigma = sig))
 #' print(fit)
 #'
+#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 #' plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 #' rug(d, col = "red")
 #' matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
 #' legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
-#'   legend = expression("R's est.", "data", paste(hat(f)[n], " (in other colors)")))
+#'   legend = expression("R's est.", "data",
+#'     paste(hat(f)[n], " (in other colors)")))
+#' }
 #'
 fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
   if(any(is.na(data) | is.infinite(data)))
@@ -569,7 +584,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
 #'  # Estimating f(x0) for sigma-grid
 #' x0 <- 1
 #' fit <- kade(x = x0, data = d, method = "nonrobust",
-#'   Sigma = seq(0.01, 10, length = 10), ticker = TRUE, plot = TRUE)
+#'   Sigma = seq(0.01, 10, length = 10), ticker = TRUE)
 #' print(fit)
 #'
 #' \dontrun{

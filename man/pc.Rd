@@ -18,7 +18,8 @@ Coefficient \eqn{p_c} of eq. (15.15) in Eichner (2017).
 \details{
 p_c = 1/5 * (3c^2 - 5) / (3 - c^2) * c^2.
 
-For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013).
+For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute
+(2013).
 }
 \note{
 \eqn{p_c} should be undefined for \eqn{c = \sqrt 3}, but \code{pc}
@@ -27,6 +28,7 @@ For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013
       contains R's value of \code{sqrt(3)}.
 }
 \examples{
+\dontrun{
 c0 <- expression(sqrt(5/3))
 c1 <- expression(sqrt(3) - 0.01)
 cgrid <- seq(1.325, 1.7, by = 0.025)
@@ -34,4 +36,6 @@ cvals <- c(eval(c0), cgrid, eval(c1))
 
 plot(cvals, pc(cvals), xaxt = "n", xlab = "c", ylab = expression(p[c]))
 axis(1, at = cvals, labels = c(c0, cgrid, c1), las = 2)
+}
+
 }

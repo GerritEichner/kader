@@ -26,9 +26,11 @@ Basically, for \code{cc} in \eqn{[\sqrt(5/3), \sqrt 5]}:
 
 \code{J_admissible(u, cc)} = \code{J1(u, cc)} if \code{cc} \eqn{< \sqrt(3)},
 
-\code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt(3)}, and
+\code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt(3)},
+and
 
-\code{J_admissible(u, cc)} = \code{sqrt(3) * (2*u - 1)} if \code{cc} \eqn{= \sqrt(3)}.
+\code{J_admissible(u, cc)} = \code{sqrt(3) * (2*u - 1)} if \code{cc}
+\eqn{= \sqrt(3)}.
 }
 \note{
 The admissible rank transformations require \eqn{c} to
@@ -38,9 +40,12 @@ The admissible rank transformations require \eqn{c} to
       yields the optimal rank transformation.
 }
 \examples{
+\dontrun{
 par(mfrow = c(1, 2), mar = c(3, 3, 0.5, 0.5), mgp = c(1.7, 0.7, 0))
 example(J1)
 example(J2)
+}
+
 }
 \seealso{
 \code{\link{J1}} and \code{\link{J2}}.

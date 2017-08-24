@@ -37,6 +37,7 @@ Eq. (15.16) in Eichner (2017), and hence \eqn{J_1(u, c)}, requires
       not satisfy this requirement a warning (only) is issued.
 }
 \examples{
+\dontrun{
 u <- seq(0, 1, by = 0.01)
 c0 <- expression(sqrt(5/3))
 c1 <- expression(sqrt(3) - 0.01)
@@ -50,6 +51,8 @@ matplot(u, Y, type = "l", lty = "solid", col = cols,
 abline(h = 0)
 legend("topleft", title = "c", legend = c(c0, cgrid, c1),
   lty = 1, col = cols, cex = 0.8)
+}
+
 }
 \seealso{
 \code{\link{J_admissible}}.

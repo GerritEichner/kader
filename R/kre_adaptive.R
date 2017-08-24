@@ -3,7 +3,7 @@
 ###  kre_adaptive.R
 ### Functions for computing the adaptive regression estimator for "Kernel
 ### adjusted nonparametric regression" of Eichner & Stute (2012).
-### R 3.4.1, 16./17./24.2./21./22./23.8.2017 (11.8.2014 / 25.11.2016)
+### R 3.4.1, 16./17./24.2./21./22./23./24.8.2017 (11.8.2014 / 25.11.2016)
 ###*****************************************************************************
 
 #' The Classical Nadaraya-Watson Regression Estimator
@@ -273,6 +273,7 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #' Sigma <- seq(0.01, 10, length = 51)   # \sigma-grid for minimization.
 #' fit <- kare(x.points = x0, data = data, Sigma = Sigma)
 #'
+#' \dontrun{
 #'  # Grafical display for the current data set
 #'  #******************************************
 #'  # Storing the curent settings of the graphics device
@@ -329,6 +330,8 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #'                             y = signif(fit$msehat.min, 4)))))
 #'
 #' par(op) # Restoring the previous settings of the graphics device.
+#' }
+#'
 kare <- function(x.points, data, # Someday to be adapted to args. of ksmooth()?
   kernel = c("gaussian", "epanechnikov", "rectangular"),
   Sigma = seq(0.01, 10, length = 51), h = NULL, theta = NULL) {

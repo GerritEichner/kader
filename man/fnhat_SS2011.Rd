@@ -57,7 +57,7 @@ simple preparatory computation and then calls \code{\link{compute_fnhat}}
 which does the actual work.
 }
 \examples{
-require(stats);   require(grDevices)
+require(stats);   require(grDevices);    require(datasets)
 
  # Simulated N(0,1)-data and one sigma-value
 set.seed(2016);     n <- 100;     d <- rnorm(n)
@@ -66,10 +66,12 @@ fit <- fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
   theta = mean(d), sigma = 1)
 print(fit)
 
+\dontrun{
 plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 curve(dnorm, add = TRUE);   rug(d, col = "red")
 legend("topleft", lty = 1, col = c("blue", "black", "red"),
   legend = expression(tilde(f)[n], phi, "data"))
+}
 
 
  # The same data, but several sigma-values
@@ -79,12 +81,15 @@ fit <- lapply(sigmas, function(sig)
     theta = mean(d), sigma = sig))
 print(fit)
 
+\dontrun{
 ymat <- sapply(fit, "[[", "y")
 matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 curve(dnorm, add = TRUE);   rug(d, col = "red")
 legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
-  legend = expression(phi, "data", paste(tilde(f)[n], " (in other colors)")))
+  legend = expression(phi, "data",
+    paste(tilde(f)[n], " (in other colors)")))
+}
 
 
  # Old-Faithful-eruptions-data and several sigma-values
@@ -95,12 +100,15 @@ fit <- lapply(sigmas, function(sig)
      theta = mean(d), sigma = sig))
 print(fit)
 
+\dontrun{
 ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 rug(d, col = "red")
 matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
 legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
-  legend = expression("R's est.", "data", paste(tilde(f)[n], " (in other colors)")))
+  legend = expression("R's est.", "data",
+    paste(tilde(f)[n], " (in other colors)")))
+}
 
 }
 \references{

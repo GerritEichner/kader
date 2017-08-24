@@ -4,7 +4,7 @@
 ### Fcts. related to the optimal transformation (J) in "Rank Transformations
 ### in Kernel Density Estimation" of Eichner & Stute (2013), like the solution
 ### J to the isoperimetric problem.
-### R 3.4.1, 10./12./13./16.2./21./22.8.2017 (27./31.10./16.11./5.12.2016)
+### R 3.4.1, 10./12./13./16.2./21./22./24.8.2017 (27./31.10./16.11./5.12.2016)
 ###*****************************************************************************
 
 #' Cube-root that retains its argument's sign
@@ -27,7 +27,8 @@ cuberoot <- function(x) {
 #'
 #' p_c = 1/5 * (3c^2 - 5) / (3 - c^2) * c^2.
 #'
-#' For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013).
+#' For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute
+#' (2013).
 #'
 #' @export
 #' @param cc Numeric vector.
@@ -39,6 +40,7 @@ cuberoot <- function(x) {
 #'       contains R's value of \code{sqrt(3)}.
 #'
 #' @examples
+#' \dontrun{
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.01)
 #' cgrid <- seq(1.325, 1.7, by = 0.025)
@@ -46,6 +48,8 @@ cuberoot <- function(x) {
 #'
 #' plot(cvals, pc(cvals), xaxt = "n", xlab = "c", ylab = expression(p[c]))
 #' axis(1, at = cvals, labels = c(c0, cgrid, c1), las = 2)
+#' }
+#'
 pc <- function(cc) {
   cc2 <- cc*cc
   res <- (3*cc2 - 5) / (3 - cc2) * cc2 / 5
@@ -62,7 +66,8 @@ pc <- function(cc) {
 #'
 #' \eqn{q_c(u) = 2/5 * c^5 / (3 - c^2) * (1 - 2 * u)}
 #'
-#' For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013).
+#' For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute
+#' (2013).
 #'
 #' @export
 #' @param u Numeric vector.
@@ -74,6 +79,7 @@ pc <- function(cc) {
 #'       contains R's value of \code{sqrt(3)}.
 #'
 #' @examples
+#' \dontrun{
 #' u <- c(0, 1)   # seq(0, 1, by = 0.1)
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.05)
@@ -87,6 +93,8 @@ pc <- function(cc) {
 #' abline(h = 0, lty = "dashed")
 #' legend("topright", title = "c", legend = c(c0, cgrid, c1),
 #'   lty = 1, col = cols, cex = 0.8)
+#' }
+#'
 qc <- function(u, cc = sqrt(5/3)) {
   if(!is.numeric(cc) || length(cc) > 1)
     stop("cc must be a numeric vector of length 1!")
@@ -126,6 +134,7 @@ qc <- function(u, cc = sqrt(5/3)) {
 #' @seealso \code{\link{J_admissible}}.
 #'
 #' @examples
+#' \dontrun{
 #' u <- seq(0, 1, by = 0.01)
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.01)
@@ -139,6 +148,8 @@ qc <- function(u, cc = sqrt(5/3)) {
 #' abline(h = 0)
 #' legend("topleft", title = "c", legend = c(c0, cgrid, c1),
 #'   lty = 1, col = cols, cex = 0.8)
+#' }
+#'
 J1 <- function(u, cc = sqrt(5/3)) {
   if(!is.numeric(cc) || length(cc) > 1)
     stop("cc must be a numeric vector of length 1!")
@@ -180,6 +191,7 @@ J1 <- function(u, cc = sqrt(5/3)) {
 #' @seealso \code{\link{J_admissible}}.
 #'
 #' @examples
+#' \dontrun{
 #' u <- seq(0, 1, by = 0.01)
 #' c0 <- expression(sqrt(3) + 0.01)
 #' c1 <- expression(sqrt(5))
@@ -193,6 +205,8 @@ J1 <- function(u, cc = sqrt(5/3)) {
 #' abline(h = 0)
 #' legend("topleft", title = "c", legend = c(c0, cgrid, c1),
 #'   lty = 1, col = cols, cex = 0.8)
+#' }
+#'
 J2 <- function(u, cc = sqrt(5)) {
   if(!is.numeric(cc) || length(cc) > 1)
     stop("cc must be a numeric vector of length 1!")
@@ -220,9 +234,11 @@ J2 <- function(u, cc = sqrt(5)) {
 #'
 #' \code{J_admissible(u, cc)} = \code{J1(u, cc)} if \code{cc} \eqn{< \sqrt(3)},
 #'
-#' \code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt(3)}, and
+#' \code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt(3)},
+#' and
 #'
-#' \code{J_admissible(u, cc)} = \code{sqrt(3) * (2*u - 1)} if \code{cc} \eqn{= \sqrt(3)}.
+#' \code{J_admissible(u, cc)} = \code{sqrt(3) * (2*u - 1)} if \code{cc}
+#' \eqn{= \sqrt(3)}.
 #'
 #' @export
 #' @inheritParams J2
@@ -237,9 +253,12 @@ J2 <- function(u, cc = sqrt(5)) {
 #' @seealso \code{\link{J1}} and \code{\link{J2}}.
 #'
 #' @examples
+#' \dontrun{
 #' par(mfrow = c(1, 2), mar = c(3, 3, 0.5, 0.5), mgp = c(1.7, 0.7, 0))
 #' example(J1)
 #' example(J2)
+#' }
+#'
 J_admissible <- function(u, cc = sqrt(5)) {
   if(!is.numeric(cc) || length(cc) > 1)
     stop("cc must be a numeric vector of length 1.")

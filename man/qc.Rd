@@ -20,7 +20,8 @@ Coefficient \eqn{q_c(u)} of eq. (15.15) in Eichner (2017).
 \details{
 \eqn{q_c(u) = 2/5 * c^5 / (3 - c^2) * (1 - 2 * u)}
 
-For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013).
+For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute
+(2013).
 }
 \note{
 \eqn{q_c(u)} should be undefined for \eqn{c = \sqrt 3}, but \code{qc}
@@ -28,6 +29,7 @@ For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute (2013
       contains R's value of \code{sqrt(3)}.
 }
 \examples{
+\dontrun{
 u <- c(0, 1)   # seq(0, 1, by = 0.1)
 c0 <- expression(sqrt(5/3))
 c1 <- expression(sqrt(3) - 0.05)
@@ -41,4 +43,6 @@ matplot(u, Y, type = "l", lty = "solid", col = cols,
 abline(h = 0, lty = "dashed")
 legend("topright", title = "c", legend = c(c0, cgrid, c1),
   lty = 1, col = cols, cex = 0.8)
+}
+
 }

@@ -131,6 +131,7 @@ x.points <- seq(-3.3 * design.scl, 3.3 * design.scl, length = 101) +
 Sigma <- seq(0.01, 10, length = 51)   # \\sigma-grid for minimization.
 fit <- kare(x.points = x0, data = data, Sigma = Sigma)
 
+\dontrun{
  # Grafical display for the current data set
  #******************************************
  # Storing the curent settings of the graphics device
@@ -187,6 +188,8 @@ legend("topleft", lty = c(1, NA), pch = c(NA, 4),
                             y = signif(fit$msehat.min, 4)))))
 
 par(op) # Restoring the previous settings of the graphics device.
+}
+
 }
 \references{
 Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
