@@ -319,7 +319,7 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #' density is to be estimated, the data, etc.). In particular, the estimator of
 #' \eqn{\theta} (which is typically the arithmetic mean of the data) is
 #' expected to be already ``contained'' in those pre-computed quantities, which
-#' increases the computational efficieny.
+#' increases the computational efficiency.
 #'
 #' The computational procedure in this function can be highly iterative because
 #' for each point in \code{x} (and hence for each row of matrix \code{Ai}) the
