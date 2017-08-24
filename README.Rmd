@@ -1,0 +1,74 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# kader
+
+The goal of kader is to supply functions to compute nonparametric kernel estimators for  
+
+* density estimation using a data-adjusted kernel or an
+appropriate rank-transformation, and for  
+* regression using a data-adjusted kernel.  
+
+The functions are based on the theory introduced in  
+
+* Srihera, R., Stute, W. (2011): Kernel adjusted density estimation.
+Statistics and Probability Letters 81, 571 - 579,
+URL http://dx.doi.org/10.1016/j.spl.2011.01.013.  
+* Eichner, G., Stute, W. (2012): Kernel adjusted nonparametric regression.
+Journal of Statistical Planning and Inference 142, 2537 - 2544,
+URL http://dx.doi.org/10.1016/j.jspi.2012.03.011.  
+* Eichner, G., Stute, W. (2013): Rank Transformations in Kernel Density
+Estimation. Journal of Nonparametric Statistics 25(2), 427 - 445,
+URL http://dx.doi.org/10.1080/10485252.2012.760737.  
+
+A very brief summary of the theory and sort of a vignette is presented in
+Eichner, G. (2017): Kader - An R package for nonparametric kernel adjusted
+density estimation and regression. In: Ferger, D., et al. (eds.): From
+Statistics to Mathematical Finance, Festschrift in Honour of Winfried Stute.
+Springer International Publishing. To appear in Oct. 2017.
+
+
+## Installation
+
+You can install kader from CRAN with:
+
+```{r cran-installation, eval = FALSE}
+install.packages("kader")
+```
+
+or from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("GerritEichner/kader")
+```
+
+## Example
+
+This example shows you how to estimate at $x_0 = 2$ the value of the density 
+underlying Old-Faithful's eruptions data using the method of Srihera & Stute
+(2011):
+
+```{r example}
+library(kader)
+x0 <- 2
+sig <- seq(0.01, 10, length = 51)
+fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
+  Sigma = sig, ticker = TRUE, plot = TRUE)
+print(fit)
+```
+
+
+
+
