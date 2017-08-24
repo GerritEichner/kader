@@ -1,0 +1,23 @@
+Package: kader
+Type: Package
+Title: Kernel Adaptive Density Estimation and Regression
+Version: 0.0.7
+Date: 2017-08-23
+Authors@R: person("Gerrit", "Eichner",
+                  email = "gerrit.eichner@math.uni-giessen.de",
+                  role = c("aut", "cre"))
+Maintainer: Gerrit Eichner <gerrit.eichner@math.uni-giessen.de>
+Description: Implementation of various kernel adaptive methods in nonparametric
+    curve estimation like density estimation as introduced in Stute and Srihera
+    (2011) and Eichner and Stute (2013) for pointwise estimation, and like
+    regression as described in Eichner and Stute (2012).
+Depends: R (>= 3.4.1)
+License: GPL-3
+Encoding: UTF-8
+LazyData: TRUE
+URL: http://www.uni-giessen.de/eichner/
+URL: http://github.com/GerritEichner/kader
+BugReports: http://github.com/GerritEichner/kader/issues
+RoxygenNote: 6.0.1
+Suggests: testthat
+Imports: grDevices, graphics, stats
