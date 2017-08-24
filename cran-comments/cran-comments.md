@@ -6,14 +6,14 @@ output: html_document
 ---
 
 ## Test environments
-* local OS X install, R 3.1.2 ???????????
-* ubuntu 12.04 (on travis-ci), R 3.1.2 ?????????????
+* local: Windows 10 Pro on x86_64-w64-mingw32/x64 (64-bit), R 3.4.1
+* Ubuntu 14.04.5 LTS (on travis-ci), R 3.4.1
 * win-builder (devel and release)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
-There were 3 NOTEs:
+There were 3 NOTEs (from win-builder):
 
 * Possibly mis-spelled words in DESCRIPTION:  
   Eichner (12:16, 13:32)  
@@ -40,10 +40,8 @@ appear not until Oct. 2017.
 * Non-standard file/directory found at top level:  
   'cran-comments'
 ```
-The directory contain this file.
+The directory contains this file.
 ```
-
-
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this
