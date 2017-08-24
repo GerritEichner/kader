@@ -98,11 +98,13 @@ x0 <- 1
 fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
 print(fit)
 
+\dontrun{
  # Estimating f(x0) for sigma-grid
 x0 <- 1
 fit <- kade(x = x0, data = d, method = "nonrobust",
   Sigma = seq(0.01, 10, length = 10), ticker = TRUE)
 print(fit)
+}
 
 \dontrun{
  # Estimating f(x0) for sigma-grid and Old-Faithful-eruptions-data

@@ -57,18 +57,17 @@ devtools::install_github("GerritEichner/kader")
 ## Example
 
 This example shows you how to estimate at $x_0 = 2$ the value of the density 
-underlying Old-Faithful's eruptions data using the method of Srihera & Stute
-(2011):
+function of the probability distribution underlying Old-Faithful's eruptions data
+using the (nonrobust) method of Srihera & Stute (2011). The initial grid 
+(given to `Sigma`) on which the minimization of the estimated MSE as a function
+of a (kernel-adjusting) scale parameter $\sigma$ is started is rather coarse here
+to save computing time.
 
 ```{r example}
 library(kader)
 x0 <- 2
-sig <- seq(0.01, 10, length = 51)
+sigma <- seq(0.01, 10, length = 21)
 fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
-  Sigma = sig, ticker = TRUE, plot = TRUE)
+  Sigma = sigma, ticker = TRUE)
 print(fit)
 ```
-
-
-
-
