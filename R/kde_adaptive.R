@@ -4,7 +4,7 @@
 ### Functions for computing the adaptive density estimator for "Kernel
 ### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
 ### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24.8.2017
+### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8.2017
 ###  (6./7./10.2.2015 / 21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
 ###*****************************************************************************
 
@@ -113,13 +113,13 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' require(stats);   require(grDevices);    require(datasets)
 #'
 #'  # Simulated N(0,1)-data and one sigma-value
-#' set.seed(2016);     n <- 100;     d <- rnorm(n)
+#' set.seed(2017);     n <- 100;     d <- rnorm(n)
 #' xgrid <- seq(-4, 4, by = 0.1)
 #' fit <- fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
 #'   theta = mean(d), sigma = 1)
 #' print(fit)
 #'
-#' \dontrun{
+#' \donttest{
 #' plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("blue", "black", "red"),
@@ -127,6 +127,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' }
 #'
 #'
+#' \donttest{
 #'  # The same data, but several sigma-values
 #' sigmas <- seq(1, 4, length = 4)
 #' fit <- lapply(sigmas, function(sig)
@@ -134,7 +135,6 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'     theta = mean(d), sigma = sig))
 #' print(fit)
 #'
-#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y")
 #' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
 #'   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
@@ -145,6 +145,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' }
 #'
 #'
+#' \donttest{
 #'  # Old-Faithful-eruptions-data and several sigma-values
 #' d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
 #' xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
@@ -153,7 +154,6 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'      theta = mean(d), sigma = sig))
 #' print(fit)
 #'
-#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 #' plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 #' rug(d, col = "red")
@@ -242,7 +242,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'   ranktrafo = J2, sigma = 1)
 #' print(fit)
 #'
-#' \dontrun{
+#' \donttest{
 #' plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("blue", "black", "red"),
@@ -250,6 +250,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #' }
 #'
 #'
+#' \donttest{
 #'  # The same data, but several sigma-values
 #' sigmas <- seq(1, 4, length = 4)
 #' fit <- lapply(sigmas, function(sig)
@@ -257,9 +258,8 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'     ranktrafo = J2, sigma = sig))
 #' print(fit)
 #'
-#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y")
-#' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
+#' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 2 + seq(sigmas),
 #'   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
@@ -267,6 +267,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #' }
 #'
 #'
+#' \donttest{
 #'  # Old-Faithful-eruptions-data and several sigma-values
 #' d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
 #' xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
@@ -275,11 +276,10 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'      ranktrafo = J2, sigma = sig))
 #' print(fit)
 #'
-#' \dontrun{
 #' ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 #' plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 #' rug(d, col = "red")
-#' matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
+#' matlines(x = xgrid, y = ymat, lty = 1, col = 2 + seq(sigmas))
 #' legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
 #'   legend = expression("R's est.", "data",
 #'     paste(hat(f)[n], " (in other colors)")))
@@ -581,7 +581,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
 #' fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
 #' print(fit)
 #'
-#' \dontrun{
+#' \donttest{
 #'  # Estimating f(x0) for sigma-grid
 #' x0 <- 1
 #' fit <- kade(x = x0, data = d, method = "nonrobust",

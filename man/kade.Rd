@@ -91,14 +91,14 @@ Summarizing information and technical details can be found in Eichner
 require(stats)
 
  # Generating N(0,1)-data
-set.seed(2017);     n <- 100;     d <- rnorm(n)
+set.seed(2017);     n <- 50;     d <- rnorm(n)
 
  # Estimating f(x0) for one sigma-value
 x0 <- 1
 fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
 print(fit)
 
-\dontrun{
+\donttest{
  # Estimating f(x0) for sigma-grid
 x0 <- 1
 fit <- kade(x = x0, data = d, method = "nonrobust",
