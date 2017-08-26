@@ -1,9 +1,15 @@
 ---
 title: "cran-comments.md"
 author: "Gerrit Eichner"
-date: "24 August 2017"
+date: "26 August 2017"
 output: html_document
 ---
+
+## Resubmission
+This is a resubmission. In this version I have (as requested):  
+* added DOIs for the references in the DESCRIPTION.  
+* shortened or "switched off" (\donttest{}) the examples which
+  were running > 5 sec. (Now all run in < 5 sec.) 
 
 ## Test environments
 * local: Windows 10 Pro on x86_64-w64-mingw32/x64 (64-bit), R 3.4.1
@@ -22,8 +28,8 @@ There was 1 NOTE (from win-builder):
   nonparametric (10:67)  
   pointwise (12:45)  
 ```
-The above spellings are correct. (The first three are names,
-the others I have checked on www.leo.org.)
+The above spellings are correct. (The first three are
+names, the others I have checked on www.leo.org.)
 ```
 
 ## Downstream dependencies

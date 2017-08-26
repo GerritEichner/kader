@@ -97,7 +97,6 @@ set.seed(2017);     n <- 100;     d <- rnorm(n)
 x0 <- 1
 fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
 print(fit)
-
 \donttest{
  # Estimating f(x0) for sigma-grid
 x0 <- 1
@@ -105,7 +104,6 @@ fit <- kade(x = x0, data = d, method = "nonrobust",
   Sigma = seq(0.01, 10, length = 10), ticker = TRUE)
 print(fit)
 }
-
 \dontrun{
  # Estimating f(x0) for sigma-grid and Old-Faithful-eruptions-data
 x0 <- 2
@@ -113,7 +111,6 @@ fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
   Sigma = seq(0.01, 10, length = 51), ticker = TRUE, plot = TRUE)
 print(fit)
 }
-
 }
 \references{
 Srihera & Stute (2011), Eichner & Stute (2013), and Eichner

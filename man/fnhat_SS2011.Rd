@@ -65,15 +65,12 @@ xgrid <- seq(-4, 4, by = 0.1)
 fit <- fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
   theta = mean(d), sigma = 1)
 print(fit)
-
 \donttest{
 plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 curve(dnorm, add = TRUE);   rug(d, col = "red")
 legend("topleft", lty = 1, col = c("blue", "black", "red"),
   legend = expression(tilde(f)[n], phi, "data"))
 }
-
-
 \donttest{
  # The same data, but several sigma-values
 sigmas <- seq(1, 4, length = 4)
@@ -90,8 +87,6 @@ legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
   legend = expression(phi, "data",
     paste(tilde(f)[n], " (in other colors)")))
 }
-
-
 \donttest{
  # Old-Faithful-eruptions-data and several sigma-values
 d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
@@ -109,7 +104,6 @@ legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
   legend = expression("R's est.", "data",
     paste(tilde(f)[n], " (in other colors)")))
 }
-
 }
 \references{
 Srihera & Stute (2011) and Eichner (2017): see \link{kader}.
