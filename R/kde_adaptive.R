@@ -561,7 +561,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
 #' require(stats)
 #'
 #'  # Generating N(0,1)-data
-#' set.seed(2017);     n <- 100;     d <- rnorm(n)
+#' set.seed(2017);     n <- 80;     d <- rnorm(n)
 #'
 #'  # Estimating f(x0) for one sigma-value
 #' x0 <- 1
