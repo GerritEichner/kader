@@ -83,7 +83,7 @@ fit <- lapply(sigmas, function(sig)
 print(fit)
 
 ymat <- sapply(fit, "[[", "y")
-matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
+matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 2 + seq(sigmas),
   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 curve(dnorm, add = TRUE);   rug(d, col = "red")
 legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
@@ -103,7 +103,7 @@ print(fit)
 ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 rug(d, col = "red")
-matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
+matlines(x = xgrid, y = ymat, lty = 1, col = 2 + seq(sigmas))
 legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
   legend = expression("R's est.", "data",
     paste(hat(f)[n], " (in other colors)")))
