@@ -4,7 +4,8 @@
 ### Fcts. related to the optimal transformation (J) in "Rank Transformations
 ### in Kernel Density Estimation" of Eichner & Stute (2013), like the solution
 ### J to the isoperimetric problem.
-### R 3.4.1, 10./12./13./16.2./21./22./24.8.2017 (27./31.10./16.11./5.12.2016)
+### R 3.4.1, 10./12./13./16.2./21./22./24.8./27.9.2017
+###  (27./31.10./16.11./5.12.2016)
 ###*****************************************************************************
 
 #' Cube-root that retains its argument's sign
@@ -14,6 +15,15 @@
 #'
 #' @param x Numeric vector.
 #' @return Vector of same length and mode as input.
+#'
+#' @examples
+#' cuberoot(x = 1)
+#' cuberoot(x = -1)
+#' cuberoot(x = 27)
+#' cuberoot(x = -27)
+#' \dontrun{
+#' curve(cuberoot(x), from = -27, to = 27)
+#' }
 #'
 cuberoot <- function(x) {
   sign(x) * abs(x)^(1/3)
