@@ -19,10 +19,11 @@ the estimator.}
 \item{h}{Numeric scalar for bandwidth \eqn{h}.}
 
 \item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} as
-produced by \code{\link{fnhat_SS2011}} in case of the
-rank-transformation method, but \eqn{(\hat \theta - X_1, \ldots,
-\hat \theta - X_n)} as produced by \code{\link{fnhat_ES2013}} in
-case of the non-robust method.}
+produced in \code{\link{fnhat_SS2011}} in case of the
+rank-transformation method (using an admissible rank-transformation
+as implemented by \code{\link{J_admissible}}), but
+\eqn{(\hat \theta - X_1, \ldots, \hat \theta - X_n)} as produced
+in \code{\link{fnhat_ES2013}} in case of the non-robust method.}
 
 \item{sigma}{Numeric scalar for value of scale parameter \eqn{\sigma}.}
 }
@@ -45,6 +46,17 @@ bandwidth \eqn{h}). The formulas that the computational version implemented
 here is based upon are given in eq. (15.3) and eq. (15.9), respectively, of
 Eichner (2017). This function rests on preparatory computations done in
 \code{\link{fnhat_SS2011}} or \code{\link{fnhat_ES2013}}.
+}
+\examples{
+require(stats)
+
+ # Simulated N(0,1)-data and one sigma-value
+set.seed(2017);     n <- 100;     d <- rnorm(n)
+xgrid <- seq(-4, 4, by = 0.1)
+jvalues <- -J_admissible(1:n / n)
+y <- compute_fnhat(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
+  Bj = jvalues, sigma = 1)
+
 }
 \references{
 Srihera & Stute (2011), Eichner and Stute (2013), and Eichner
