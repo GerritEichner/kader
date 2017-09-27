@@ -4,7 +4,7 @@
 ### Functions for computing the adaptive density estimator for "Kernel
 ### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
 ### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8.2017
+### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8./27.9.2017
 ###  (6./7./10.2.2015 / 21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
 ###*****************************************************************************
 
@@ -33,10 +33,11 @@
 #'          the estimator.
 #' @param h Numeric scalar for bandwidth \eqn{h}.
 #' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} as
-#'           produced by \code{\link{fnhat_SS2011}} in case of the
-#'           rank-transformation method, but \eqn{(\hat \theta - X_1, \ldots,
-#'           \hat \theta - X_n)} as produced by \code{\link{fnhat_ES2013}} in
-#'           case of the non-robust method.
+#'           produced in \code{\link{fnhat_SS2011}} in case of the
+#'           rank-transformation method (using an admissible rank-transformation
+#'           as implemented by \code{\link{J_admissible}}), but
+#'           \eqn{(\hat \theta - X_1, \ldots, \hat \theta - X_n)} as produced
+#'           in \code{\link{fnhat_ES2013}} in case of the non-robust method.
 #' @param sigma Numeric scalar for value of scale parameter \eqn{\sigma}.
 #'
 #' @return A numeric vector of the same length as \code{x} with the estimated
@@ -45,11 +46,23 @@
 #'
 #' @references Srihera & Stute (2011), Eichner and Stute (2013), and Eichner
 #'             (2017): see \link{kader}.
+#'
+#' @examples
+#' require(stats)
+#'
+#'  # Simulated N(0,1)-data and one sigma-value
+#' set.seed(2017);     n <- 100;     d <- rnorm(n)
+#' xgrid <- seq(-4, 4, by = 0.1)
+#' jvalues <- -J_admissible(1:n / n)
+#' y <- compute_fnhat(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
+#'   Bj = jvalues, sigma = 1)
+#'
 compute_fnhat <- function(x, data, K, h, Bj, sigma) {
   sig_hh <- sigma / (h * h)
+  Bj_h <- Bj/h
   sig_hh * sapply(x, function(x0) {
     sig..x.X_hh <- sig_hh * (x0 - data)   # = A_i, length(data) x 1
-    Karg <- outer(sig..x.X_hh, Bj, "+")   # length(data) x length(data)
+    Karg <- outer(sig..x.X_hh, Bj_h, "+") # length(data) x length(data)
     # Delete diagonal to average only over pairs of different indices
     # (cf. eq. (1.6) in S. & S. (2011) or eq. (4) in E. & S. (2013)):
     Karg <- Karg[ c(FALSE, rep(TRUE, nrow(Karg)))]
@@ -161,9 +174,9 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
     stop("Missing or infinite values in data not allowed!")
   if(length(sigma) != 1) stop("sigma must have length 1!")
 
-  theta.X_h <- (theta - data) / h   # = B_j, length(data) x 1
+  theta.X <- theta - data   # = B_j, length(data) x 1
 
-  y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = theta.X_h,
+  y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = theta.X,
     sigma = sigma)   # length(x) x 1
 
   res <- list(x = x, y = y, bw = h, n = length(data),
@@ -281,9 +294,9 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 
   if (is.unsorted(data)) data <- sort(data)
   n <- length(data)
-  negRT_h <- -ranktrafo(1:n / n) / h   # = B_j, n x 1. This is why
-                                       # the data *must* be sorted!
-  y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = negRT_h,
+  negRT_h <- -ranktrafo(1:n / n)   # = B_j, n x 1. This is why
+                                   # the data *must* be sorted!
+  y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = negRT,
     sigma = sigma)   # length(x) x 1
 
   res <- list(x = x, y = y, bw = h, n = n, call = match.call(),
@@ -338,9 +351,9 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #'           \eqn{k =} \code{length(x)} are the points at which the density is
 #'           to be estimated for the data \eqn{X_1, \ldots, X_n} with \eqn{h =
 #'           n^(-1/5)}.
-#' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))/h} in
+#' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in
 #'           case of the rank-transformation method, but \eqn{(\hat \theta -
-#'           X_1, \ldots, \hat \theta - X_n))/h} in case of the non-robust
+#'           X_1, \ldots, \hat \theta - X_n)} in case of the non-robust
 #'           Srihera-Stute-method.
 #' @param fnx Numeric vector expecting \eqn{(f_n(x_1), \ldots, f_n(x_k))} with
 #'            \eqn{(f_n(x_i) =} \code{mean(K(Ai[i,]))/h} the Parzen-Rosenblatt
@@ -386,8 +399,8 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
   plot = FALSE, parlist = NULL, ...) {
   # For the following quantities on the lhs of each "=" see kare():
   # Ai = x.X_h.matrix in both methods,
-  # Bj = theta.X_h for the non-robust method of S. & S. (2011), and
-  # Bj = negRT_h for the robust method of E. & S. (2013).
+  # Bj = theta.X for the non-robust method of S. & S. (2011), and
+  # Bj = negRT for the robust method of E. & S. (2013).
 
   message("\nFor each element in x: Computing estimated values of\n",
           "bias and scaled variance on the sigma-grid.")
@@ -420,7 +433,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
          # repeated after extending the range of the grid until both
          # estimator functions are *not constant* across the grid.
 
-        BV <- bias_AND_scaledvar(sigma = sigma, Ai = Ai[i,], Bj = Bj * h,
+        BV <- bias_AND_scaledvar(sigma = sigma, Ai = Ai[i,], Bj = Bj,
           h = h, K = K, fnx = fnx[i], ticker = ticker);   message("")
 
         VarHat.scaled <- BV$VarHat.scaled
@@ -468,7 +481,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
        # Minimizing MSEHat = BiasHat.squared + VarHat.scaled as a function of
        # \sigma using two different methods; see minimize_MSEHat()!
       minMSE <- minimize_MSEHat(VarHat.scaled, BiasHat.squared, sigma = sigma,
-        Ai = Ai[i,], Bj = Bj * h, h = h, K = K, fnx = fnx[i], ticker = ticker,
+        Ai = Ai[i,], Bj = Bj, h = h, K = K, fnx = fnx[i], ticker = ticker,
         plot = plot, ...);  if(ticker) message("")
 
       if(!is.null(prefix)) grDevices::dev.off()
@@ -683,18 +696,18 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
     Y <- switch(method,
       nonrobust = {
         message("adaptive method of Srihera & Stute (2011).")
-        theta.X_h <- (theta - data) / h   # B_j (theta = arith. mean of data).
+        theta.X <- theta - data   # B_j (theta = arith. mean of data).
         adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
-          Ai = x.X_h.matrix, Bj = theta.X_h, fnx = fnx, ticker = ticker,
+          Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx, ticker = ticker,
           plot = plot, parlist = parlist)
       },
       ranktrafo = {
         message("rank-transformation-based robust adaptive method of ",
                 "Eichner & Stute (2013).")
         # Rank-transformation-values: This is why the data *must* be sorted!
-        negRT_h <- -ranktrafo(1:n / n) / h  # B_j
+        negRT <- -ranktrafo(1:n / n)  # B_j
         adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
-          Ai = x.X_h.matrix, Bj = negRT_h, fnx = fnx, ticker = ticker,
+          Ai = x.X_h.matrix, Bj = negRT, fnx = fnx, ticker = ticker,
           plot = plot, parlist = parlist)
       },
       {
@@ -706,15 +719,15 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
           plot.ranks <- paste0(plot, "ranktrafo")
         } else { plot.nonrob <- plot.ranks <- plot }
 
-        theta.X_h <- (theta - data) / h   # B_j (theta = arith. mean of data).
+        theta.X <- theta - data   # B_j (theta = arith. mean of data).
         y1 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
-          sigma = Sigma, Ai = x.X_h.matrix, Bj = theta.X_h, fnx = fnx,
+          sigma = Sigma, Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx,
           ticker = ticker, plot = plot.nonrob, parlist = parlist)
 
         # Rank-transformation-values: This is why the data *must* be sorted!
-        negRT_h <- -ranktrafo(1:n / n) / h  # B_j
+        negRT_h <- -ranktrafo(1:n / n)  # B_j
         y2 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
-          sigma = Sigma, Ai = x.X_h.matrix, Bj = negRT_h, fnx = fnx,
+          sigma = Sigma, Ai = x.X_h.matrix, Bj = negRT, fnx = fnx,
           ticker = ticker, plot = plot.ranks, parlist = parlist)
 
         list(SS2011 = y1, ES2013 = y2)
