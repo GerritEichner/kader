@@ -294,7 +294,7 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 
   if (is.unsorted(data)) data <- sort(data)
   n <- length(data)
-  negRT_h <- -ranktrafo(1:n / n)   # = B_j, n x 1. This is why
+  negRT <- -ranktrafo(1:n / n)   # = B_j, n x 1. This is why
                                    # the data *must* be sorted!
   y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = negRT,
     sigma = sigma)   # length(x) x 1
@@ -652,30 +652,50 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
   message("Using the ", appendLF = FALSE)
   if(length(Sigma) == 1) { # Only one sigma-value, whence no minimization!
 
-    Y <- switch(method,
-      nonrobust = { # Adaptive method of S. & S. (2011)
-        message("adaptive method of Srihera & Stute (2011).")
-        fnhat_SS2011(x = x, data = data, K = Kadap, h = h, theta = theta,
-          sigma = Sigma)
-        },
-      ranktrafo = { # Robust adaptive method of E. & S. (2013)
-        message("rank-transformation-based robust adaptive method of ",
-                "Eichner & Stute (2013).")
-        # (Note: sorting the data will happen in fnhat_ES2013().)
-        fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
-          ranktrafo = ranktrafo, sigma = Sigma)
-        },
-      { message("adaptive method of Srihera & Stute (2011) and the ",
-                "\nrank-transformation-based robust adaptive method of ",
-                "Eichner & Stute (2013).")
-        y1 <- fnhat_SS2011(x = x, data = data, K = Kadap, h = h,
-          theta = theta, sigma = Sigma)
-        # (Note: sorting the data will happen in fnhat_ES2013().)
-        y2 <- fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
-          ranktrafo = ranktrafo, sigma = Sigma)
-        list(SS2011 = y1, ES2013 = y2)
-      })
-    return(Y)
+    # Y <- switch(method,
+    #   nonrobust = { # Adaptive method of S. & S. (2011)
+    #     message("adaptive method of Srihera & Stute (2011).")
+    #     fnhat_SS2011(x = x, data = data, K = Kadap, h = h, theta = theta,
+    #       sigma = Sigma)
+    #     },
+    #   ranktrafo = { # Robust adaptive method of E. & S. (2013)
+    #     message("rank-transformation-based robust adaptive method of ",
+    #             "Eichner & Stute (2013).")
+    #     # (Note: sorting the data will happen in fnhat_ES2013().)
+    #     fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
+    #       ranktrafo = ranktrafo, sigma = Sigma)
+    #     },
+    #   { message("adaptive method of Srihera & Stute (2011) and the ",
+    #             "\nrank-transformation-based robust adaptive method of ",
+    #             "Eichner & Stute (2013).")
+    #     y1 <- fnhat_SS2011(x = x, data = data, K = Kadap, h = h,
+    #       theta = theta, sigma = Sigma)
+    #     # (Note: sorting the data will happen in fnhat_ES2013().)
+    #     y2 <- fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
+    #       ranktrafo = ranktrafo, sigma = Sigma)
+    #     list(SS2011 = y1, ES2013 = y2)
+    #   })
+    y1 <- if(method %in% c("both", "nonrobust")) {
+      message("adaptive method of Srihera & Stute (2011)", appendLF = FALSE)
+      fnhat_SS2011(x = x, data = data, K = Kadap, h = h, theta = theta,
+                   sigma = Sigma)
+      }
+
+    if(method == "both") message("and the")
+
+    y2 <- if(method %in% c("both", "robust")) {
+      message("rank-transformation-based robust adaptive method of ",
+              "Eichner & Stute (2013)", appendLF = FALSE)
+      # (Note: sorting the data will happen in fnhat_ES2013().)
+      fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
+                   ranktrafo = ranktrafo, sigma = Sigma)
+      }
+
+    message(".")
+
+    return(
+      switch(method,
+             nonrobust = y1, robust = y2, list(SS2011 = y1, ES2013 = y2)))
 
     } else { # Minimization in Sigma
 

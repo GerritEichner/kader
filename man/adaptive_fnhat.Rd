@@ -27,9 +27,9 @@ x_i - X_n)/h}, where (usually) \eqn{x_1, \ldots, x_k} with
 to be estimated for the data \eqn{X_1, \ldots, X_n} with \eqn{h =
 n^(-1/5)}.}
 
-\item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))/h} in
+\item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in
 case of the rank-transformation method, but \eqn{(\hat \theta -
-X_1, \ldots, \hat \theta - X_n))/h} in case of the non-robust
+X_1, \ldots, \hat \theta - X_n)} in case of the non-robust
 Srihera-Stute-method.}
 
 \item{fnx}{Numeric vector expecting \eqn{(f_n(x_1), \ldots, f_n(x_k))} with
