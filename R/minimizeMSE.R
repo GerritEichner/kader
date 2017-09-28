@@ -1,37 +1,12 @@
 #2345678901234567890123456789012345678901234567890123456789012345678901234567890
 ### ~/PapersBooksReportsReviewsTheses/PapersSelbst/FestschriftWS70/kader/R/
-###  helperfunctions.R
-### Convolution of K with fn and minimization MSE-estimator for "Kernel
-### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
-### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 13./14./15./16./17./24.2./22./23.8.2017
+###  minimizeMSE.R
+### Minimization of MSE-estimator for "Kernel adjusted density estimation" of
+### Srihera & Stute (2011) and for "Rank Transformations in Kernel Density
+### Estimation" of Eichner & Stute (2013).
+### R 3.4.1, 13./14./15./16./17./24.2./22./23.8./28.9.2017
 ###  (21./24./26./27./28./31.10./4./9.11./5.12.2016)
 ###*****************************************************************************
-
-#' Convolution of Kernel Function K with fn
-#'
-#' Vectorized evaluation of the convolution of the kernel function K with fn.
-#'
-#' Vectorized (in u) evaluation of - a more explicit representation of - the
-#' integrand \eqn{K(u) * f_n(\ldots - h^2/\sigma * u)} which is used in the
-#' computation of the bias estimator before eq. (2.3) in Srihera & Stute (2011).
-#' Also used for the analogous computation of the respective bias estimator
-#' in the paragraph after eq. (6) in Eichner & Stute (2013).
-#'
-#' @param u Numeric vector.
-#' @param K Kernel function with vectorized in- & output.
-#' @param xixj Numeric matrix.
-#' @param h_sig Numeric scalar.
-#'
-#' @return A vector of \eqn{(K * f_n)(u)} evaluated at the values in \code{u}.
-#'
-#' @note An alternative implementation could be
-#'       \code{K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
-kfn_vectorized <- function(u, K, xixj, h_sig) {
-  XU <- outer(xixj, h_sig * u, "-")
-  K(u) * colMeans(K(XU), dims = 2)
-}
-
 
 
 #' Minimization of Estimated MSE
