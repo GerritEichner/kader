@@ -40,7 +40,7 @@ The admissible rank transformations require \eqn{c} to
       yields the optimal rank transformation.
 }
 \examples{
-\dontrun{
+\donttest{
 par(mfrow = c(1, 2), mar = c(3, 3, 0.5, 0.5), mgp = c(1.7, 0.7, 0))
 example(J1)
 example(J2)

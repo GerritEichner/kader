@@ -29,7 +29,7 @@ For further details see p. 297 f. in Eichner (2017) and/or Eichner & Stute
       contains R's value of \code{sqrt(3)}.
 }
 \examples{
-\dontrun{
+\donttest{
 u <- c(0, 1)   # seq(0, 1, by = 0.1)
 c0 <- expression(sqrt(5/3))
 c1 <- expression(sqrt(3) - 0.05)

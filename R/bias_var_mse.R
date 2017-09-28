@@ -29,9 +29,9 @@
 #'         \code{u}.
 #'
 #' @note An alternative implementation could be
-#'       \code{h * K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
+#'       \code{K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
 #'
-#' @example
+#' @examples
 #' require(stats)
 #'
 #' set.seed(2017);   n <- 100;   Xdata <- rnorm(n)
@@ -83,7 +83,7 @@ kfn_vectorized <- function(u, K, xixj, h_sig) {
 #' @references Srihera & Stute (2011) and Eichner & Stute (2013): see
 #'             \link{kader}.
 #'
-#' @example
+#' @examples
 #' require(stats)
 #'
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
@@ -155,7 +155,7 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
 #' @return A vector with corresponding MSE values for the values in
 #'         \code{sigma}.
 #'
-#' @example
+#' @examples
 #' require(stats)
 #'
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))

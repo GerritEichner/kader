@@ -37,7 +37,7 @@ Eq. (15.16) in Eichner (2017), and hence \eqn{J_1(u, c)}, requires
       not satisfy this requirement a warning (only) is issued.
 }
 \examples{
-\dontrun{
+\donttest{
 u <- seq(0, 1, by = 0.01)
 c0 <- expression(sqrt(5/3))
 c1 <- expression(sqrt(3) - 0.01)

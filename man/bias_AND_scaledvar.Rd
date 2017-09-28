@@ -18,8 +18,8 @@ be estimated for the data \eqn{X_1, \ldots, X_n} with
 \item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in case
 of the rank-transformation method, but \eqn{(\hat{\theta} - X_1,
 \ldots, \hat{\theta} - X_n)} in case of the non-robust
-Srihera-Stute-method. (Note the missing denominator \eqn{h} in
-comparison to argument \code{Bj} of \code{\link{adaptive_fnhat}}!)}
+Srihera-Stute-method. (Note that this the same as argument
+\code{Bj} of \code{\link{adaptive_fnhat}}!)}
 
 \item{h}{Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.}
 
@@ -41,6 +41,27 @@ the bias estimator and the scaled variance estimator of eq. (2.3) in Srihera
 & Stute (2011), and for the analogous computation of the bias and scaled
 variance estimator for the rank-transformation method in the paragraph
 after eq. (6) in Eichner & Stute (2013).
+}
+\examples{
+require(stats)
+
+set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
+
+h <- n^(-1/5)
+Ai <- (x0 - Xdata)/h
+fnx0 <- mean(dnorm(Ai)) / h   # Parzen-Rosenblatt estimator at x0.
+
+ # non-robust method:
+theta.X <- mean(Xdata) - Xdata
+bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
+  h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+
+ # rank-transformation-based method (requires sorted data):
+negJ <- -J_admissible(1:n / n)   # rank-trafo
+bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
+  h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+
 }
 \references{
 Srihera & Stute (2011) and Eichner & Stute (2013): see

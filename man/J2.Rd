@@ -35,7 +35,7 @@ Eq. (20) in Eichner (2017), and hence \eqn{J_2(u, c)}, requires
       transformation.
 }
 \examples{
-\dontrun{
+\donttest{
 u <- seq(0, 1, by = 0.01)
 c0 <- expression(sqrt(3) + 0.01)
 c1 <- expression(sqrt(5))

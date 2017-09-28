@@ -405,7 +405,7 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #' @references Srihera & Stute (2011) and Eichner & Stute (2013): see
 #'             \link{kader}.
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' require(stats)
 #'

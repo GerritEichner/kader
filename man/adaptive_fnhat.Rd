@@ -103,6 +103,32 @@ estimator for the adapted \eqn{\sigma}, i.e., for the MSE-estimator-minimizing
 extending the range of the grid until the estimator functions for both bias
 and variance are \emph{not constant} across the \eqn{\sigma}-grid.)
 }
+\examples{
+\dontrun{
+require(stats)
+
+ # Kernel adaptive density estimators for simulated N(0,1)-data computed
+ # on an x-grid using the rank-transformation and the non-robust method:
+set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+x <- seq(-4, 4, by = 0.5)
+Sigma <- seq(0.01, 10, length = 51)
+h <- n^(-1/5)
+
+x.X_h <- outer(x/h, Xdata/h, "-")
+fnx <- rowMeans(dnorm(x.X_h)) / h   # Parzen-Rosenblatt estim. at
+                                    # x_j, j = 1, ..., length(x).
+ # non-robust method:
+theta.X <- mean(Xdata) - Xdata
+adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
+  Ai = x.X_h, Bj = theta.X, fnx = fnx, ticker = TRUE, plot = TRUE)
+
+ # rank-transformation-based method (requires sorted data):
+negJ <- -J_admissible(1:n / n)   # rank-trafo
+adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
+  Ai = x.X_h, Bj = negJ, fnx = fnx, ticker = TRUE, plot = TRUE)
+}
+
+}
 \references{
 Srihera & Stute (2011) and Eichner & Stute (2013): see
             \link{kader}.

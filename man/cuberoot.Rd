@@ -17,11 +17,8 @@ Computes \eqn{(x_1^(1/3), \ldots, x_n^(1/3))} with \eqn{x_i^(1/3)} being
 negative if \eqn{x_i < 0}.
 }
 \examples{
-kader:::cuberoot(x = 1)
-kader:::cuberoot(x = -1)
-kader:::cuberoot(x = 27)
-kader:::cuberoot(x = -27)
-\dontrun{
+kader:::cuberoot(x = c(-27, -1, -0, 0, 1, 27))
+\donttest{
 curve(kader:::cuberoot(x), from = -27, to = 27)
 }
 

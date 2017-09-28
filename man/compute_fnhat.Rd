@@ -47,15 +47,25 @@ here is based upon are given in eq. (15.3) and eq. (15.9), respectively, of
 Eichner (2017). This function rests on preparatory computations done in
 \code{\link{fnhat_SS2011}} or \code{\link{fnhat_ES2013}}.
 }
+\note{
+In case of the rank-transformation method the data are expected to
+      be sorted in increasing order.
+}
 \examples{
 require(stats)
 
- # Simulated N(0,1)-data and one sigma-value
-set.seed(2017);     n <- 100;     d <- rnorm(n)
+ # The kernel density estimators for simulated N(0,1)-data and a single
+ # sigma-value evaluated on a grid using the rank-transformation and
+ # the non-robust method:
+set.seed(2017);     n <- 100;     Xdata <- rnorm(n)
 xgrid <- seq(-4, 4, by = 0.1)
-jvalues <- -J_admissible(1:n / n)
-y <- compute_fnhat(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
-  Bj = jvalues, sigma = 1)
+negJ <- -J_admissible(1:n / n)   # rank-trafo
+compute_fnhat(x = xgrid, data = sort(Xdata),   # requires sorted data
+  K = dnorm, h = n^(-1/5), Bj = negJ, sigma = 1)
+
+theta.X <- mean(Xdata) - Xdata    # non-robust method
+compute_fnhat(x = xgrid, data = Xdata, K = dnorm, h = n^(-1/5),
+  Bj = theta.X, sigma = 1)
 
 }
 \references{
