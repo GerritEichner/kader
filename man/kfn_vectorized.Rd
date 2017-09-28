@@ -18,7 +18,7 @@ kfn_vectorized(u, K, xixj, h, sig)
 \item{sig}{Numeric scalar.}
 }
 \value{
-A vector of \eqn{K * f_n)(u)} evaluated at the values in
+A vector of \eqn{(K * f_n)(u)} evaluated at the values in
         \code{u}.
 }
 \description{
