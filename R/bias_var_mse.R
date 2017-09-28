@@ -1,13 +1,55 @@
 #2345678901234567890123456789012345678901234567890123456789012345678901234567890
 ### ~/PapersBooksReportsReviewsTheses/PapersSelbst/FestschriftWS70/kader/R/
 ###  bias_var_mse.R
-### Functions for computation of the estimators of bias, scaled variance and
-### mse for "Kernel adjusted density estimation" of Srihera & Stute (2011)
-### and for "Rank Transformations in Kernel Density Estimation" of Eichner &
-### Stute (2013).
-### R 3.4.1, 13./14./17.2./21./22./23.8.2017 (6./7./10.2.2015 /
+### Functions for computing the convolution of a kernel K with a pertaining fn,
+### the estimators of bias, scaled variance and  mse for "Kernel adjusted
+### density estimation" of Srihera & Stute (2011) and for "Rank Transformations
+### in Kernel Density Estimation" of Eichner & Stute (2013).
+### R 3.4.1, 13./14./17.2./21./22./23.8./28.9.2017 (6./7./10.2.2015 /
 ###  21./24./26./28./31.10./2./4./9.11./5.12.2016)
 ###*****************************************************************************
+
+#' Convolution of Kernel Function K with fn
+#'
+#' Vectorized evaluation of the convolution of the kernel function K with fn.
+#'
+#' Vectorized (in u) evaluation of - a more explicit representation of - the
+#' integrand \eqn{h * K(u) * f_n(\ldots - h^2/\sigma * u)} which is used -
+#' without the preceeding scaling factor - in the
+#' computation of the bias estimator before eq. (2.3) in Srihera & Stute (2011).
+#' Also used for the analogous computation of the respective bias estimator
+#' in the paragraph after eq. (6) in Eichner & Stute (2013).
+#'
+#' @param u Numeric vector.
+#' @param K Kernel function with vectorized in- & output.
+#' @param xixj Numeric matrix.
+#' @param h_sig Numeric scalar.
+#'
+#' @return A vector of \eqn{h * (K * f_n)(u)} evaluated at the values in
+#'         \code{u}.
+#'
+#' @note An alternative implementation could be
+#'       \code{h * K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
+#'
+#' @example
+#' require(stats)
+#'
+#' set.seed(2017);   n <- 100;   Xdata <- rnorm(n)
+#' x0 <- 1;          sig <- 1;   h <- n^(-1/5)
+#'
+#' Ai <- (x0 - Xdata)/h
+#' Bj <- mean(Xdata) - Xdata   # in case of non-robust method
+#' AiBj <- outer(Ai, Bj/sig, "+")
+#'
+#' ugrid <- seq(-10, 10, by = 1)
+#' kfn_vectorized(u = ugrid, K = dnorm, xixj = AiBj, h_sig = h/sig)
+#'
+kfn_vectorized <- function(u, K, xixj, h_sig) {
+  XU <- outer(xixj, h_sig * u, "-")
+  K(u) * colMeans(K(XU), dims = 2)
+}
+
+
 
 #' Estimators of Bias and Scaled Variance
 #'
@@ -26,8 +68,8 @@
 #' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in case
 #'           of the rank-transformation method, but \eqn{(\hat{\theta} - X_1,
 #'           \ldots, \hat{\theta} - X_n)} in case of the non-robust
-#'           Srihera-Stute-method. (Note the missing denominator \eqn{h} in
-#'           comparison to argument \code{Bj} of \code{\link{adaptive_fnhat}}!)
+#'           Srihera-Stute-method. (Note that this the same as argument
+#'           \code{Bj} of \code{\link{adaptive_fnhat}}!)
 #' @param h Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.
 #' @param K Kernel function with vectorized in- & output.
 #' @param fnx \eqn{f_n(x_0) =} \code{mean(K(Ai))/h}, where typically
@@ -40,6 +82,27 @@
 #'
 #' @references Srihera & Stute (2011) and Eichner & Stute (2013): see
 #'             \link{kader}.
+#'
+#' @example
+#' require(stats)
+#'
+#' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
+#'
+#' h <- n^(-1/5)
+#' Ai <- (x0 - Xdata)/h
+#' fnx0 <- mean(dnorm(Ai)) / h   # Parzen-Rosenblatt estimator at x0.
+#'
+#'  # non-robust method:
+#' theta.X <- mean(Xdata) - Xdata
+#' bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#'
+#'  # rank-transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#' bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#'
 bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
   nr <- length(Ai)
   nc <- length(Bj)
@@ -91,6 +154,26 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
 #'
 #' @return A vector with corresponding MSE values for the values in
 #'         \code{sigma}.
+#'
+#' @example
+#' require(stats)
+#'
+#' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
+#'
+#' h <- n^(-1/5)
+#' Ai <- (x0 - Xdata)/h
+#' fnx0 <- mean(dnorm(Ai)) / h   # Parzen-Rosenblatt estimator at x0.
+#'
+#'  # non-robust method:
+#' theta.X <- mean(Xdata) - Xdata
+#' mse_hat(sigma = Sigma, Ai = Ai, Bj = theta.X,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#'
+#'  # rank-transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#' mse_hat(sigma = Sigma, Ai = Ai, Bj = negJ,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 mse_hat <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
   BV <- bias_AND_scaledvar(sigma = sigma, Ai = Ai, Bj = Bj, h = h, K = K,
