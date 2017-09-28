@@ -14,8 +14,7 @@
 #' Vectorized evaluation of the convolution of the kernel function K with fn.
 #'
 #' Vectorized (in u) evaluation of - a more explicit representation of - the
-#' integrand \eqn{h * K(u) * f_n(\ldots - h^2/\sigma * u)} which is used -
-#' without the preceeding scaling factor - in the
+#' integrand \eqn{K(u) * f_n(\ldots - h^2/\sigma * u)} which is used in the
 #' computation of the bias estimator before eq. (2.3) in Srihera & Stute (2011).
 #' Also used for the analogous computation of the respective bias estimator
 #' in the paragraph after eq. (6) in Eichner & Stute (2013).
@@ -23,13 +22,14 @@
 #' @param u Numeric vector.
 #' @param K Kernel function with vectorized in- & output.
 #' @param xixj Numeric matrix.
-#' @param h_sig Numeric scalar.
+#' @param h Numeric scalar.
+#' @param sig Numeric scalar.
 #'
-#' @return A vector of \eqn{h * (K * f_n)(u)} evaluated at the values in
+#' @return A vector of \eqn{(K * f_n)(u)} evaluated at the values in
 #'         \code{u}.
 #'
 #' @note An alternative implementation could be
-#'       \code{K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
+#'       \code{K(u) * sapply(h/sig * u, function(v) mean(K(xixj - v))) / h}
 #'
 #' @examples
 #' require(stats)
@@ -42,11 +42,11 @@
 #' AiBj <- outer(Ai, Bj/sig, "+")
 #'
 #' ugrid <- seq(-10, 10, by = 1)
-#' kfn_vectorized(u = ugrid, K = dnorm, xixj = AiBj, h_sig = h/sig)
+#' kader:::kfn_vectorized(u = ugrid, K = dnorm, xixj = AiBj, h = h, sig = sig)
 #'
-kfn_vectorized <- function(u, K, xixj, h_sig) {
-  XU <- outer(xixj, h_sig * u, "-")
-  K(u) * colMeans(K(XU), dims = 2)
+kfn_vectorized <- function(u, K, xixj, h, sig) {
+  XU <- outer(xixj, h/sig * u, "-")
+  K(u) * colMeans(K(XU), dims = 2) / h
 }
 
 
@@ -87,7 +87,7 @@ kfn_vectorized <- function(u, K, xixj, h_sig) {
 #' require(stats)
 #'
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
-#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 11)
 #'
 #' h <- n^(-1/5)
 #' Ai <- (x0 - Xdata)/h
@@ -95,12 +95,12 @@ kfn_vectorized <- function(u, K, xixj, h_sig) {
 #'
 #'  # non-robust method:
 #' theta.X <- mean(Xdata) - Xdata
-#' bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
+#' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 #'  # rank-transformation-based method (requires sorted data):
 #' negJ <- -J_admissible(1:n / n)   # rank-trafo
-#' bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
+#' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
@@ -121,17 +121,16 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
       AiBj <- Ai.times.nc + Y       # outer(Ai, Bj/sig, "+"),
       dim(AiBj) <- c(nr, nc)        # but approx. twice as fast.
 
-      h_sig <- h / sig
       KInt <- try(stats::integrate(f = kfn_vectorized,  # Integral
             lower = -Inf, upper = Inf,                  # in bias
-            K = K, xixj = AiBj, h_sig = h_sig),         # estimator.
+            K = K, xixj = AiBj, h = h, sig = sig),      # estimator.
             silent = TRUE)
 
       proto.biashat <- if(!inherits(KInt, "try-error"))
         KInt$value else
         { cat("\n");  print(KInt); NA }
 
-      AiBj <- K(AiBj / h_sig)                        # Quantities whose
+      AiBj <- K(sig / h * AiBj)                      # Quantities whose
       varhat <- stats::var(.rowMeans(AiBj, nr, nc) + # sample var. is the
                            .colMeans(AiBj, nr, nc))  # var. estimator.
                      # Z_i on p. 431 in ES2013 or before (2.3) in SS2011.
@@ -139,7 +138,7 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
       c(B = proto.biashat, V = varhat)
     });   if(ticker) message(".", appendLF = FALSE)
 
-  list(BiasHat = unname(BV["B",]) / h - fnx,
+  list(BiasHat = unname(BV["B",]) - fnx,
        VarHat.scaled = sigma*sigma / (nr * h*h*h*h) * unname(BV["V",]))
 }
 
@@ -155,11 +154,13 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
 #' @return A vector with corresponding MSE values for the values in
 #'         \code{sigma}.
 #'
+#' @seealso For details see \code{\link{bias_AND_scaledvar}}.
+#'
 #' @examples
 #' require(stats)
 #'
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
-#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 11)
 #'
 #' h <- n^(-1/5)
 #' Ai <- (x0 - Xdata)/h
@@ -167,12 +168,12 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
 #'
 #'  # non-robust method:
 #' theta.X <- mean(Xdata) - Xdata
-#' mse_hat(sigma = Sigma, Ai = Ai, Bj = theta.X,
+#' kader:::mse_hat(sigma = Sigma, Ai = Ai, Bj = theta.X,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 #'  # rank-transformation-based method (requires sorted data):
 #' negJ <- -J_admissible(1:n / n)   # rank-trafo
-#' mse_hat(sigma = Sigma, Ai = Ai, Bj = negJ,
+#' kader:::mse_hat(sigma = Sigma, Ai = Ai, Bj = negJ,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 mse_hat <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {

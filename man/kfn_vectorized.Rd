@@ -4,7 +4,7 @@
 \alias{kfn_vectorized}
 \title{Convolution of Kernel Function K with fn}
 \usage{
-kfn_vectorized(u, K, xixj, h_sig)
+kfn_vectorized(u, K, xixj, h, sig)
 }
 \arguments{
 \item{u}{Numeric vector.}
@@ -13,10 +13,12 @@ kfn_vectorized(u, K, xixj, h_sig)
 
 \item{xixj}{Numeric matrix.}
 
-\item{h_sig}{Numeric scalar.}
+\item{h}{Numeric scalar.}
+
+\item{sig}{Numeric scalar.}
 }
 \value{
-A vector of \eqn{h * (K * f_n)(u)} evaluated at the values in
+A vector of \eqn{K * f_n)(u)} evaluated at the values in
         \code{u}.
 }
 \description{
@@ -24,15 +26,14 @@ Vectorized evaluation of the convolution of the kernel function K with fn.
 }
 \details{
 Vectorized (in u) evaluation of - a more explicit representation of - the
-integrand \eqn{h * K(u) * f_n(\ldots - h^2/\sigma * u)} which is used -
-without the preceeding scaling factor - in the
+integrand \eqn{K(u) * f_n(\ldots - h^2/\sigma * u)} which is used in the
 computation of the bias estimator before eq. (2.3) in Srihera & Stute (2011).
 Also used for the analogous computation of the respective bias estimator
 in the paragraph after eq. (6) in Eichner & Stute (2013).
 }
 \note{
 An alternative implementation could be
-      \code{h * K(u) * sapply(h_sig * u, function(v) mean(K(xixj - v)))}
+      \code{K(u) * sapply(h/sig * u, function(v) mean(K(xixj - v))) / h}
 }
 \examples{
 require(stats)
@@ -45,6 +46,6 @@ Bj <- mean(Xdata) - Xdata   # in case of non-robust method
 AiBj <- outer(Ai, Bj/sig, "+")
 
 ugrid <- seq(-10, 10, by = 1)
-kfn_vectorized(u = ugrid, K = dnorm, xixj = AiBj, h_sig = h/sig)
+kader:::kfn_vectorized(u = ugrid, K = dnorm, xixj = AiBj, h = h, sig = sig)
 
 }
