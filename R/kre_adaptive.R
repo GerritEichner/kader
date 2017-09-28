@@ -3,7 +3,7 @@
 ###  kre_adaptive.R
 ### Functions for computing the adaptive regression estimator for "Kernel
 ### adjusted nonparametric regression" of Eichner & Stute (2012).
-### R 3.4.1, 16./17./24.2./21./22./23./24.8.2017 (11.8.2014 / 25.11.2016)
+### R 3.4.1, 16./17./24.2./21./22./23./24.8./28.9.2017 (11.8.2014 / 25.11.2016)
 ###*****************************************************************************
 
 #' The Classical Nadaraya-Watson Regression Estimator
@@ -31,6 +31,37 @@
 #' @param h Numeric scalar for bandwidth \eqn{h}.
 #'
 #' @return A numeric vector of the same length as \code{x}.
+#'
+#' @examples
+#' require(stats)
+#'
+#'  # Simulation parameters and data generation
+#'  #******************************************
+#'  # Regression function: a polynomial of degree 4 with one maximum (or
+#'  # minimum), one point of inflection, and one saddle point.
+#'  # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
+#'  # is at x = (3*x1 + x2)/4, the point of inflection is at x =
+#'  # (x1 + x2)/2, and the saddle point at x = x2.
+#' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
+#'  a * (x - x1) * (x - x2)^3 + b
+#' }
+#'  # Note: for m()'s default values a minimum is at x = 2, a point of
+#'  # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
+#'  # point would, e.g., be at x = 5.
+#'
+#' n <- 100      # Sample size.
+#' set.seed(42)   # to guanrantee reproducibility.
+#' X <- runif(n, min = -3, max = 15)        # x_1, ..., x_n
+#' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n
+#'
+#' x <- seq(-3, 15, by = 0.5) # Locations at which the Nadaraya-Watson kernel
+#'                           # estimator of m shall be computed.
+#'
+#' fnhat <- nadwat(x = x, dataX = X, dataY = Y, K = dnorm, h = n^(-1/5))
+#'
+#' plot(x = X, y = Y)
+#' lines(x = x, y = fnhat, col = "blue")
+#' curve(m, add = TRUE, col = "red")
 #'
 nadwat <- function(x, dataX, dataY, K, h) {
  M <- K(outer(x/h, dataX/h, "-"))   # length(x) x length(Y)
@@ -240,12 +271,12 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #'  # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
 #'  # is at x = (3*x1 + x2)/4, the point of inflection is at x =
 #'  # (x1 + x2)/2, and the saddle point at x = x2.
-#'  # Note: for poly4()'s default values a minimum is at x = 2, a point
-#'  # of inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
-#'  # point would, e.g., be at x = 5.
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
 #' }
+#'  # Note: for m()'s default values a minimum is at x = 2, a point of
+#'  # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
+#'  # point would, e.g., be at x = 5.
 #'
 #' x0 <- 5   # The point x_0 at which the MSE-optimal kernel adjusted
 #'  # nonparametric estimation of m should take place. (Recall: for m's
@@ -358,7 +389,7 @@ kare <- function(x.points, data, # Someday to be adapted to args. of ksmooth()?
     epanechnikov = epanechnikov,   # kader:::epanechnikov,
     rectangular  = rectangular)    # kader:::rectangular)
 
-  # Select kernel for (non-adaptive) Nadarya-Watson estimator.
+  # Select kernel for (non-adaptive) Nadaraya-Watson estimator.
   # Independent choice not yet implemented.
   Knawa <- Kadap
 
