@@ -732,7 +732,7 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
       switch(method,
              nonrobust = y1, robust = y2, list(SS2011 = y1, ES2013 = y2)))
 
-    } else { # Minimization in Sigma
+   } else { # Minimization in Sigma
 
     # Computation of quantities that do not depend on the scale parameter
     # \sigma and will repeatedly be needed in what follows. Their computation
@@ -743,52 +743,78 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
     #
     # BUT WHERE is it used therein except in the use of negRT?
     #
-    if (is.unsorted(data)) data <- sort(data)
+    if(is.unsorted(data)) data <- sort(data)
 
     x.X_h.matrix <- outer(x/h, data/h, "-")    # rows of A_i's, length(x) x n.
     fnx <- rowMeans(Kparo(x.X_h.matrix)) / h   # Parzen-Rosenblatt estim. at
                                                # x_j, j = 1, ..., length(x).
+    # Y <- switch(method,
+    #   nonrobust = {
+    #     message("adaptive method of Srihera & Stute (2011).")
+    #     theta.X <- theta - data   # B_j (theta = arith. mean of data).
+    #     adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
+    #       Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx, ticker = ticker,
+    #       plot = plot, parlist = parlist)
+    #   },
+    #   ranktrafo = {
+    #     message("rank-transformation-based robust adaptive method of ",
+    #             "Eichner & Stute (2013).")
+    #     # Rank-transformation-values: This is why the data *must* be sorted!
+    #     negRT <- -ranktrafo(1:n / n)  # B_j
+    #     adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
+    #       Ai = x.X_h.matrix, Bj = negRT, fnx = fnx, ticker = ticker,
+    #       plot = plot, parlist = parlist)
+    #   },
+    #   {
+    #     message("adaptive method of Srihera & Stute (2011) and the ",
+    #             "\nrank-transformation-based robust adaptive method of ",
+    #             "Eichner & Stute (2013).")
+    #     if(is.character(plot) || is.numeric(plot)) {
+    #       plot.nonrob <- paste0(plot, "nonrobust")
+    #       plot.ranks <- paste0(plot, "ranktrafo")
+    #     } else { plot.nonrob <- plot.ranks <- plot }
+    #
+    #     theta.X <- theta - data   # B_j (theta = arith. mean of data).
+    #     y1 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
+    #       sigma = Sigma, Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx,
+    #       ticker = ticker, plot = plot.nonrob, parlist = parlist)
+    #
+    #     # Rank-transformation-values: This is why the data *must* be sorted!
+    #     negRT_h <- -ranktrafo(1:n / n)  # B_j
+    #     y2 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
+    #       sigma = Sigma, Ai = x.X_h.matrix, Bj = negRT, fnx = fnx,
+    #       ticker = ticker, plot = plot.ranks, parlist = parlist)
+    #
+    #     list(SS2011 = y1, ES2013 = y2)
+    #   })
+    ## if (is.list(Y) && length(Y) == 1) return(Y[[1]])
+
+    y1 <- if(method %in% c("both", "nonrobust")) {
+      message("adaptive method of Srihera & Stute (2011)", appendLF = FALSE)
+      theta.X <- theta - data   # B_j (theta = arith. mean of data).
+      adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
+        Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx, ticker = ticker,
+        plot = plot, parlist = parlist)
+      }
+
+    if(method == "both") message("and the")
+
+    y2 <- if(method %in% c("both", "robust")) {
+      message("rank-transformation-based robust adaptive method of ",
+              "Eichner & Stute (2013)", appendLF = FALSE)
+      # Rank-transformation-values: This is why the data *must* be sorted!
+      negRT <- -ranktrafo(1:n / n)  # B_j
+      adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
+        Ai = x.X_h.matrix, Bj = negRT, fnx = fnx, ticker = ticker,
+        plot = plot, parlist = parlist)
+      }
+
+    message(".")
+
     Y <- switch(method,
-      nonrobust = {
-        message("adaptive method of Srihera & Stute (2011).")
-        theta.X <- theta - data   # B_j (theta = arith. mean of data).
-        adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
-          Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx, ticker = ticker,
-          plot = plot, parlist = parlist)
-      },
-      ranktrafo = {
-        message("rank-transformation-based robust adaptive method of ",
-                "Eichner & Stute (2013).")
-        # Rank-transformation-values: This is why the data *must* be sorted!
-        negRT <- -ranktrafo(1:n / n)  # B_j
-        adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
-          Ai = x.X_h.matrix, Bj = negRT, fnx = fnx, ticker = ticker,
-          plot = plot, parlist = parlist)
-      },
-      {
-        message("adaptive method of Srihera & Stute (2011) and the ",
-                "\nrank-transformation-based robust adaptive method of ",
-                "Eichner & Stute (2013).")
-        if(is.character(plot) || is.numeric(plot)) {
-          plot.nonrob <- paste0(plot, "nonrobust")
-          plot.ranks <- paste0(plot, "ranktrafo")
-        } else { plot.nonrob <- plot.ranks <- plot }
+                nonrobust = y1, robust = y2, list(SS2011 = y1, ES2013 = y2))
 
-        theta.X <- theta - data   # B_j (theta = arith. mean of data).
-        y1 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
-          sigma = Sigma, Ai = x.X_h.matrix, Bj = theta.X, fnx = fnx,
-          ticker = ticker, plot = plot.nonrob, parlist = parlist)
-
-        # Rank-transformation-values: This is why the data *must* be sorted!
-        negRT_h <- -ranktrafo(1:n / n)  # B_j
-        y2 <- adaptive_fnhat(x = x, data = data, K = Kadap, h = h,
-          sigma = Sigma, Ai = x.X_h.matrix, Bj = negRT, fnx = fnx,
-          ticker = ticker, plot = plot.ranks, parlist = parlist)
-
-        list(SS2011 = y1, ES2013 = y2)
-      })
-    # if (is.list(Y) && length(Y) == 1) return(Y[[1]])
-    Y <- if (method == "both") {
+    Y <- if(method == "both") {
       lapply(Y, function(y) do.call("rbind", lapply(y, data.frame)))
       } else do.call("rbind", lapply(Y, data.frame))
     return(Y)
