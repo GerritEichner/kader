@@ -4,7 +4,7 @@
 ### Functions for computing the adaptive density estimator for "Kernel
 ### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
 ### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8./27.9.2017
+### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8./27./28.9.2017
 ###  (6./7./10.2.2015 / 21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
 ###*****************************************************************************
 
@@ -44,18 +44,27 @@
 #'         density values from eq. (1.6) of Srihera & Stute (2011) or eq. (4)
 #'         of Eichner & Stute (2013).
 #'
+#' @note In case of the rank-transformation method the data are expected to
+#'       be sorted in increasing order.
+#'
 #' @references Srihera & Stute (2011), Eichner and Stute (2013), and Eichner
 #'             (2017): see \link{kader}.
 #'
 #' @examples
 #' require(stats)
 #'
-#'  # Simulated N(0,1)-data and one sigma-value
-#' set.seed(2017);     n <- 100;     d <- rnorm(n)
+#'  # The kernel density estimators for simulated N(0,1)-data and a single
+#'  # sigma-value evaluated on a grid using the rank-transformation and
+#'  # the non-robust method:
+#' set.seed(2017);     n <- 100;     Xdata <- rnorm(n)
 #' xgrid <- seq(-4, 4, by = 0.1)
-#' jvalues <- -J_admissible(1:n / n)
-#' y <- compute_fnhat(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
-#'   Bj = jvalues, sigma = 1)
+#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#' compute_fnhat(x = xgrid, data = sort(Xdata),   # requires sorted data
+#'   K = dnorm, h = n^(-1/5), Bj = negJ, sigma = 1)
+#'
+#' theta.X <- mean(Xdata) - Xdata    # non-robust method
+#' compute_fnhat(x = xgrid, data = Xdata, K = dnorm, h = n^(-1/5),
+#'   Bj = theta.X, sigma = 1)
 #'
 compute_fnhat <- function(x, data, K, h, Bj, sigma) {
   sig_hh <- sigma / (h * h)
@@ -295,7 +304,7 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
   if (is.unsorted(data)) data <- sort(data)
   n <- length(data)
   negRT <- -ranktrafo(1:n / n)   # = B_j, n x 1. This is why
-                                   # the data *must* be sorted!
+                                 # the data *must* be sorted!
   y <- compute_fnhat(x = x, data = data, K = K, h = h, Bj = negRT,
     sigma = sigma)   # length(x) x 1
 
@@ -395,6 +404,32 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #'
 #' @references Srihera & Stute (2011) and Eichner & Stute (2013): see
 #'             \link{kader}.
+#'
+#' @example
+#' \dontrun{
+#' require(stats)
+#'
+#'  # Kernel adaptive density estimators for simulated N(0,1)-data computed
+#'  # on an x-grid using the rank-transformation and the non-robust method:
+#' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+#' x <- seq(-4, 4, by = 0.5)
+#' Sigma <- seq(0.01, 10, length = 51)
+#' h <- n^(-1/5)
+#'
+#' x.X_h <- outer(x/h, Xdata/h, "-")
+#' fnx <- rowMeans(dnorm(x.X_h)) / h   # Parzen-Rosenblatt estim. at
+#'                                     # x_j, j = 1, ..., length(x).
+#'  # non-robust method:
+#' theta.X <- mean(Xdata) - Xdata
+#' adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
+#'   Ai = x.X_h, Bj = theta.X, fnx = fnx, ticker = TRUE, plot = TRUE)
+#'
+#'  # rank-transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#' adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
+#'   Ai = x.X_h, Bj = negJ, fnx = fnx, ticker = TRUE, plot = TRUE)
+#' }
+#'
 adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
   plot = FALSE, parlist = NULL, ...) {
   # For the following quantities on the lhs of each "=" see kare():
@@ -706,7 +741,7 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
     # Sorting the data is *absolutely necessary* because the implementation
     # in adaptive_fnhat() uses this fact extensively for efficiency reasons!
     #
-    # BUT WHERE is it used therein except in the use of negRT_h?
+    # BUT WHERE is it used therein except in the use of negRT?
     #
     if (is.unsorted(data)) data <- sort(data)
 
