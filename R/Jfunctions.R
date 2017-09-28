@@ -4,7 +4,7 @@
 ### Fcts. related to the optimal transformation (J) in "Rank Transformations
 ### in Kernel Density Estimation" of Eichner & Stute (2013), like the solution
 ### J to the isoperimetric problem.
-### R 3.4.1, 10./12./13./16.2./21./22./24.8./27.9.2017
+### R 3.4.1, 10./12./13./16.2./21./22./24.8./27./28.9.2017
 ###  (27./31.10./16.11./5.12.2016)
 ###*****************************************************************************
 
@@ -17,12 +17,9 @@
 #' @return Vector of same length and mode as input.
 #'
 #' @examples
-#' cuberoot(x = 1)
-#' cuberoot(x = -1)
-#' cuberoot(x = 27)
-#' cuberoot(x = -27)
-#' \dontrun{
-#' curve(cuberoot(x), from = -27, to = 27)
+#' kader:::cuberoot(x = c(-27, -1, -0, 0, 1, 27))
+#' \donttest{
+#' curve(kader:::cuberoot(x), from = -27, to = 27)
 #' }
 #'
 cuberoot <- function(x) {
@@ -50,7 +47,7 @@ cuberoot <- function(x) {
 #'       contains R's value of \code{sqrt(3)}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.01)
 #' cgrid <- seq(1.325, 1.7, by = 0.025)
@@ -89,7 +86,7 @@ pc <- function(cc) {
 #'       contains R's value of \code{sqrt(3)}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' u <- c(0, 1)   # seq(0, 1, by = 0.1)
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.05)
@@ -144,7 +141,7 @@ qc <- function(u, cc = sqrt(5/3)) {
 #' @seealso \code{\link{J_admissible}}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' u <- seq(0, 1, by = 0.01)
 #' c0 <- expression(sqrt(5/3))
 #' c1 <- expression(sqrt(3) - 0.01)
@@ -201,7 +198,7 @@ J1 <- function(u, cc = sqrt(5/3)) {
 #' @seealso \code{\link{J_admissible}}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' u <- seq(0, 1, by = 0.01)
 #' c0 <- expression(sqrt(3) + 0.01)
 #' c1 <- expression(sqrt(5))
@@ -263,7 +260,7 @@ J2 <- function(u, cc = sqrt(5)) {
 #' @seealso \code{\link{J1}} and \code{\link{J2}}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' par(mfrow = c(1, 2), mar = c(3, 3, 0.5, 0.5), mgp = c(1.7, 0.7, 0))
 #' example(J1)
 #' example(J2)
@@ -282,147 +279,3 @@ J_admissible <- function(u, cc = sqrt(5)) {
    sqrt(3) * (2*u - 1)
   }
 }
-
-
-
-
-
-#' #' Deprecated: Cardano's Formula on p. 434 and J_c of Lemma 3.1 in Eichner &
-#' #' Stute (2013).
-#' #'
-#' #' Example code for Cardano's formula on p. 434 in E. & S. (2013) composed
-#' #' of \code{\link{J1}} and \code{\link{J2}}, and example code for functions
-#' #' \eqn{J_c} according to Lemma 3.1 in E. & S. (2013).
-#' #'
-#' #' @inheritParams J1
-#' #'
-#' #' @examples
-#' #'   u <- seq(0, 1, by = 0.001)
-#' #'   c0 <- expression(sqrt(5/3) + 0.000001)
-#' #'   c1 <- expression(sqrt(3)   - 0.05)
-#' #'   cvalues <- c(eval(c0), seq(1.35, 1.65, by = 0.05), eval(c1))
-#' #'   cstr <- format(round(cvalues, 6))
-#' #'   cexpr <- c(c0, cvalues[-c(1,length(cvalues))], c1)
-#' #'   cols <- rainbow(length(cvalues), end = 9/12)
-#' #'
-#' #'   # [J1(u) + J2(u)^(1/2)]^(1/3)
-#' #'   #****************************
-#' #'   YY <- sapply(cvalues,
-#' #'     function(cc, u)
-#' #' #      kader:::cuberoot(J1(u, cc = cc) + sqrt(J2(u, cc = cc))),
-#' #'       cuberoot(J1(u, cc = cc) + sqrt(J2(u, cc = cc))),
-#' #'     u = u)
-#' #'   matplot(u, YY, type = "l", lty = "solid", ylab = "", col = cols,
-#' #'            main = expression((J[1] + sqrt(J[2]))^(1/3)))
-#' #'   abline(h = 0, lty = 2)
-#' #'   graphics::legend("topleft", title = "c", legend = cstr, lty = 1,
-#' #'     col = cols)
-#' #'
-#' #'   # [J1(u) - J2(u)^(1/2)]^(1/3)
-#' #'   #****************************
-#' #'   YY <- sapply(cvalues,
-#' #'     function(cc, u)
-#' #' #      kader:::cuberoot(J1(u, cc = cc) - sqrt(J2(u, cc = cc))),
-#' #'       cuberoot(J1(u, cc = cc) - sqrt(J2(u, cc = cc))),
-#' #'     u = u)
-#' #'   matplot(u, YY, type = "l", lty = "solid", ylab = "", col = cols,
-#' #'            main = expression((J[1] - sqrt(J[2]))^(1/3)))
-#' #'   abline(h = 0, lty = 2)
-#' #'   graphics::legend("topleft", title = "c", legend = cstr, lty = 1,
-#' #'     col = cols)
-#' #'
-#' #'
-#' #'  # Cardano's formula composed of J1 and J2:
-#' #'  # [J1(u) + J2(u)^(1/2)]^(1/3) + [J1(u) - J2(u)^(1/2)]^(1/3)
-#' #'  #**********************************************************
-#' #'  YY <- sapply(cvalues,
-#' #'    function(cc, u) {
-#' #'      j1 <- J1(u, cc = cc)
-#' #'      sqrtj2 <- sqrt(J2(u, cc = cc))
-#' #' #     kader:::cuberoot(j1 + sqrtj2) + kader:::cuberoot(j1 - sqrtj2)
-#' #'      cuberoot(j1 + sqrtj2) + cuberoot(j1 - sqrtj2)
-#' #'      }, u = u)
-#' #'
-#' #'  graphics::par(mar = c(3,2,2,0) + 0.1, mgp = c(1.5, 0.5, 0), tcl = -0.3)
-#' #'  matplot(u, YY, type = "l", lty = "solid", ylab = "", col = cols,
-#' #'           main = expression((J[1] + sqrt(J[2]))^(1/3) +
-#' #'                              (J[1] - sqrt(J[2]))^(1/3)))
-#' #'  abline(h = 0)
-#' #'  graphics::legend("topleft", title = "c", legend = cexpr, lty = 1,
-#' #'          col = cols, bty = "n")
-#' #'
-#' #'
-#' #'  # "Asymptote" (in c for c -> sqrt(3))
-#' #'  #*************************************
-#' #'  curve(J, add = TRUE, lty = 2, lwd = 2)
-#' #'  # = curve(sqrt(3)*(2*x-1), add = TRUE, lty = 2, lwd = 2)
-#' #'
-#' #'
-#' #'  # Optimal Jc for general c > sqrt(5/3)
-#' #'  #**************************************
-#' #'  Jc <- function(u, cc = sqrt(3)) {
-#' #'    if(cc == sqrt(3)) {
-#' #'      return(sqrt(3) * (2*u - 1))
-#' #'    } else if(cc < sqrt(3)) {    # "Cardano's formula"
-#' #'      j1 <- J1(u, cc = cc)
-#' #'      sqrtj2 <- sqrt(J2(u, cc = cc))
-#' #' #     kader:::cuberoot(j1 + sqrtj2) + kader:::cuberoot(j1 - sqrtj2)
-#' #'      cuberoot(j1 + sqrtj2) + cuberoot(j1 - sqrtj2)
-#' #'    } else if(cc > sqrt(3)) {    # "Bronstein's formula for k = 3"
-#' #'     # Using lambda2, p, q und R:
-#' #'     csq <- cc*cc
-#' #'     lambda2 <- (90 - 30 * csq) / (8 * csq*csq*cc) # < 0, cc > sqrt(3)
-#' #'     pp <- 3 / (cc * lambda2) - csq                # < 0
-#' #'     qq <- 3 / lambda2 * (1 - 2*u)                 # > 0 iff u > 1/2
-#' #'     R <- sqrt(-pp / 3)
-#' #'     arcarg <- ifelse(qq == 0, 0, (qq/2) / (R*R*R))
-#' #'     arcarg <- pmax(pmin(arcarg, 1), -1)
-#' #'     2 * R * sin(asin(arcarg) / 3)
-#' #'    }
-#' #'  }
-#' #'
-#' #' @name cardanosformula
-#' NULL
-
-
-
-#' #' Second derivatives of selected density functions
-#' #'
-#' #' Implementations of 2nd derivatives of selected density functions
-#' #' for simulation purposes to compute ideal scaling parameter.
-#' #' Second derivative of the \ldots
-#' #' @name secondderivatives
-#' NULL
-#'
-#'
-#' #' Gauss density,
-#' #' @rdname secondderivatives
-#' #' @param z Numeric vector for which the respective density function should
-#' #'          be evaluated.
-#' #' @param mean Numeric scalar. Population mean (= expected value).
-#' #'             Defaults to 0.
-#' #' @param sd Numeric scalar. Population standard deviation. Defaults to 1.
-#' dnorm_2ndderiv <- function(z, mean = 0, sd = 1) {
-#'   v <- sd * sd
-#'   ((z - mean) * (z - mean) / v - 1) / v *
-#'     stats::dnorm(x = z, mean = mean, sd = sd)
-#' }
-#'
-#' #' exponential density, and of the
-#' #' @rdname secondderivatives
-#' #' @param rate Numeric scalar representing the population rate (= 1/mean)
-#' #'             of the exponential distribution. Defaults to 1.
-#' dexp_2ndderiv <- function(z, rate) {
-#'   rate * rate * stats::dexp(x = z, rate = rate)
-#' }
-#'
-#' #' Cauchy density.
-#' #' @rdname secondderivatives
-#' #' @param location Numeric scalar representing the population median of the
-#' #'                 Cauchy distribution. Defaults to 0.
-#' #' @param scale Numeric scalar representing the population scale of the
-#' #'              Cauchy distribution. Defaults to 1.
-#' dcauchy_2ndderiv <- function(z, location = 0, scale = 1) {
-#'   dc <- stats::dcauchy(z, location = location, scale = scale)
-#'   2*pi/scale * dc*dc * (2*pi/scale * (z - location)*(z - location) * dc - 1)
-#' }

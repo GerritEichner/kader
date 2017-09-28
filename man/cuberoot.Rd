@@ -17,12 +17,12 @@ Computes \eqn{(x_1^(1/3), \ldots, x_n^(1/3))} with \eqn{x_i^(1/3)} being
 negative if \eqn{x_i < 0}.
 }
 \examples{
-cuberoot(x = 1)
-cuberoot(x = -1)
-cuberoot(x = 27)
-cuberoot(x = -27)
+kader:::cuberoot(x = 1)
+kader:::cuberoot(x = -1)
+kader:::cuberoot(x = 27)
+kader:::cuberoot(x = -27)
 \dontrun{
-curve(cuberoot(x), from = -27, to = 27)
+curve(kader:::cuberoot(x), from = -27, to = 27)
 }
 
 }
