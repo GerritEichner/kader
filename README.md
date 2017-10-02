@@ -45,8 +45,7 @@ fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
   Sigma = sigma, ticker = TRUE)
 #> h set to n^(-1/5) with n = 272.
 #> theta set to arithmetic mean of data in faithful$eruptions.
-#> Using the adaptive method of Srihera & Stute (2011).
-#> 
+#> Using the adaptive method of Srihera & Stute (2011)
 #> For each element in x: Computing estimated values of
 #> bias and scaled variance on the sigma-grid.
 #> Note: x has 1 element(s) and the sigma-grid 21.
@@ -64,6 +63,8 @@ fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
 #> Step 4: Check if numerically determined minimum is smaller
 #>         than discrete one.
 #>         Yes, optimize() was 'better' than grid search.
+#> 
+#> .
 print(fit)
 #>   x         y sigma.adap  msehat.min discr.min.smaller sig.range.adj
 #> 1 2 0.5478784   1.996629 0.003822793             FALSE             0
