@@ -125,16 +125,17 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #' }
 #'  # Note: For a few details on m() see examples in ?nadwat.
 #'
-#' n <- 10       # Sample size.
+#' n <- 100       # Sample size.
 #' set.seed(42)   # To guarantee reproducibility.
 #' X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n   # Design.
 #' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n   # Response.
 #'
 #' h <- n^(-1/5)
-#' Sigma <- seq(0.01, 10, length = 11)   # sigma-grid for minimization.
+#' Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
 #' x0 <- 5   # Location at which the estimator of m should be computed.
 #'
-#'  # Weights for Var_x0(sigma) and Bias_x0(sigma) on the sigma-grid:
+#'  # Weights (W_{ni}(x; \sigma_r))_{1<=r<=length(Sigma), 1<=i<=n} for
+#'  # Var_x0(sigma) and Bias_x0(sigma) on the sigma-grid:
 #' weights_ES2012(sigma = Sigma, xXh = (x0 - X) / h,
 #'   thetaXh = (mean(X) - X) / h, K = dnorm, h = h)
 #'
@@ -171,6 +172,39 @@ weights_ES2012 <- function(sigma, xXh, thetaXh, K, h) {
 #'
 #' @seealso \code{\link{kare}} which currently does the pre-computing.
 #'
+#' @examples
+#' require(stats)
+#'
+#'  # Simulation parameters and data generation
+#'  #******************************************
+#'  # Regression function:
+#' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
+#'  a * (x - x1) * (x - x2)^3 + b
+#' }
+#'  # Note: For a few details on m() see examples in ?nadwat.
+#'
+#' n <- 100       # Sample size.
+#' set.seed(42)   # To guarantee reproducibility.
+#' X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n   # Design.
+#' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n   # Response.
+#'
+#' h <- n^(-1/5)
+#' Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
+#' x0 <- 5   # Location at which the estimator of m should be computed.
+#'
+#' mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
+#' mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
+#'                                                      # for i = 1, ..., n.
+#'  # Estimator of Bias_x0(sigma) on the sigma-grid:
+#' (Bn <- bias_ES2012(sigma = Sigma, h = h, xXh = (x0 - X) / h,
+#'   thetaXh = (mean(X) - X) / h, K = dnorm, mmDiff = mnX - mnx0))
+#'
+#' \dontrun{
+#'  # Visualizing the estimator of Bias_x0(sigma) on the sigma-grid:
+#' plot(Sigma, Bn, type = "o", xlab = expression(sigma), ylab = "",
+#'   main = bquote(widehat("Bias")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+#' }
+#'
 bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
   drop(weights_ES2012(sigma, xXh, thetaXh, K, h) %*% mmDiff) # length(sigma) x 1
  }
@@ -198,6 +232,39 @@ bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
 #' @references Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
 #'
 #' @seealso \code{\link{kare}} which currently does the pre-computing.
+#'
+#' @examples
+#' require(stats)
+#'
+#'  # Simulation parameters and data generation
+#'  #******************************************
+#'  # Regression function:
+#' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
+#'  a * (x - x1) * (x - x2)^3 + b
+#' }
+#'  # Note: For a few details on m() see examples in ?nadwat.
+#'
+#' n <- 100       # Sample size.
+#' set.seed(42)   # To guarantee reproducibility.
+#' X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n   # Design.
+#' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n   # Response.
+#'
+#' h <- n^(-1/5)
+#' Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
+#' x0 <- 5   # Location at which the estimator of m should be computed.
+#'
+#' mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
+#' mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
+#'                                                      # for i = 1, ..., n.
+#'  # Estimator of Var_x0(sigma) on the sigma-grid:
+#' (Vn <- var_ES2012(sigma = Sigma, h = h, xXh = (x0 - X) / h,
+#'   thetaXh = (mean(X) - X) / h, K = dnorm, YmDiff2 = (Y - mnX)^2))
+#'
+#' \dontrun{
+#'  # Visualizing the estimator of Var_x0(sigma) on the sigma-grid:
+#' plot(Sigma, Vn, type = "o", xlab = expression(sigma), ylab = "",
+#'   main = bquote(widehat("Var")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+#' }
 #'
 var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
  wx <- weights_ES2012(sigma, xXh, thetaXh, K, h)   # length(sigma) x n
