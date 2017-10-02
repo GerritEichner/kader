@@ -3,7 +3,8 @@
 ###  kre_adaptive.R
 ### Functions for computing the adaptive regression estimator for "Kernel
 ### adjusted nonparametric regression" of Eichner & Stute (2012).
-### R 3.4.1, 16./17./24.2./21./22./23./24.8./28.9.2017 (11.8.2014 / 25.11.2016)
+### R 3.4.2, 16./17./24.2./21./22./23./24.8./28.9./2.10.2017
+###  (11.8.2014 / 25.11.2016)
 ###*****************************************************************************
 
 #' The Classical Nadaraya-Watson Regression Estimator
@@ -46,20 +47,19 @@
 #'  a * (x - x1) * (x - x2)^3 + b
 #' }
 #'  # Note: for m()'s default values a minimum is at x = 2, a point of
-#'  # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
-#'  # point would, e.g., be at x = 5.
+#'  # inflection at x = 4, and a saddle point an x = 8.
 #'
-#' n <- 100      # Sample size.
-#' set.seed(42)   # to guanrantee reproducibility.
-#' X <- runif(n, min = -3, max = 15)        # x_1, ..., x_n
+#' n <- 100       # Sample size.
+#' set.seed(42)   # To guarantee reproducibility.
+#' X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n
 #' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n
 #'
-#' x <- seq(-3, 15, by = 0.5) # Locations at which the Nadaraya-Watson kernel
-#'                           # estimator of m shall be computed.
+#' x <- seq(-3, 15, length = 51)   # Where the Nadaraya-Watson estimator
+#'                                 # fnhat of m shall be computed.
 #'
 #' fnhat <- nadwat(x = x, dataX = X, dataY = Y, K = dnorm, h = n^(-1/5))
 #'
-#' plot(x = X, y = Y)
+#' plot(x = X, y = Y);   rug(X)
 #' lines(x = x, y = fnhat, col = "blue")
 #' curve(m, add = TRUE, col = "red")
 #'
@@ -113,6 +113,30 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #' @seealso \code{\link{bias_ES2012}} and \code{\link{var_ES2012}} which both
 #'          call this function, and \code{\link{kare}} which currently does
 #'          the pre-computing.
+#'
+#' @examples
+#' require(stats)
+#'
+#'  # Simulation parameters and data generation
+#'  #******************************************
+#'  # Regression function:
+#' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
+#'  a * (x - x1) * (x - x2)^3 + b
+#' }
+#'  # Note: For a few details on m() see examples in ?nadwat.
+#'
+#' n <- 10       # Sample size.
+#' set.seed(42)   # To guarantee reproducibility.
+#' X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n   # Design.
+#' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n   # Response.
+#'
+#' h <- n^(-1/5)
+#' Sigma <- seq(0.01, 10, length = 11)   # sigma-grid for minimization.
+#' x0 <- 5   # Location at which the estimator of m should be computed.
+#'
+#'  # Weights for Var_x0(sigma) and Bias_x0(sigma) on the sigma-grid:
+#' weights_ES2012(sigma = Sigma, xXh = (x0 - X) / h,
+#'   thetaXh = (mean(X) - X) / h, K = dnorm, h = h)
 #'
 weights_ES2012 <- function(sigma, xXh, thetaXh, K, h) {
   if (length(xXh) != length(thetaXh))
