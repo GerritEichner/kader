@@ -20,3 +20,10 @@ A numeric vector of the rectangular kernel evaluated at the
 \description{
 Vectorized evaluation of the rectangular kernel.
 }
+\examples{
+kader:::rectangular(x = seq(-1, 1, by = 0.1))
+\donttest{
+curve(kader:::rectangular(x), from = -1, to = 1)
+}
+
+}

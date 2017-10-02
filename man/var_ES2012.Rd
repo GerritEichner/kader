@@ -43,6 +43,40 @@ Pre-computed \eqn{(x - X_i)/h}, \eqn{(\theta - X_i)/h}, and
 \eqn{(Y_i - m_n(x))^2} are expected for efficiency reasons (and are
 currently prepared in function \code{kare}).
 }
+\examples{
+require(stats)
+
+ # Simulation parameters and data generation
+ #******************************************
+ # Regression function:
+m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
+ a * (x - x1) * (x - x2)^3 + b
+}
+ # Note: For a few details on m() see examples in ?nadwat.
+
+n <- 100       # Sample size.
+set.seed(42)   # To guarantee reproducibility.
+X <- runif(n, min = -3, max = 15)      # X_1, ..., X_n   # Design.
+Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n   # Response.
+
+h <- n^(-1/5)
+Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
+x0 <- 5   # Location at which the estimator of m should be computed.
+
+mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
+mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
+                                                     # for i = 1, ..., n.
+ # Estimator of Var_x0(sigma) on the sigma-grid:
+(Vn <- var_ES2012(sigma = Sigma, h = h, xXh = (x0 - X) / h,
+  thetaXh = (mean(X) - X) / h, K = dnorm, YmDiff2 = (Y - mnX)^2))
+
+\dontrun{
+ # Visualizing the estimator of Var_x0(sigma) on the sigma-grid:
+plot(Sigma, Vn, type = "o", xlab = expression(sigma), ylab = "",
+  main = bquote(widehat("Var")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+}
+
+}
 \references{
 Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
 }

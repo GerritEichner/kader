@@ -98,12 +98,12 @@ require(stats)
  # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
  # is at x = (3*x1 + x2)/4, the point of inflection is at x =
  # (x1 + x2)/2, and the saddle point at x = x2.
- # Note: for poly4()'s default values a minimum is at x = 2, a point
- # of inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
- # point would, e.g., be at x = 5.
 m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
  a * (x - x1) * (x - x2)^3 + b
 }
+ # Note: for m()'s default values a minimum is at x = 2, a point of
+ # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
+ # point would, e.g., be at x = 5.
 
 x0 <- 5   # The point x_0 at which the MSE-optimal kernel adjusted
  # nonparametric estimation of m should take place. (Recall: for m's

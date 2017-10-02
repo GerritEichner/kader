@@ -4,7 +4,7 @@
 ### Minimization of MSE-estimator for "Kernel adjusted density estimation" of
 ### Srihera & Stute (2011) and for "Rank Transformations in Kernel Density
 ### Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 13./14./15./16./17./24.2./22./23.8./28.9.2017
+### R 3.4.2, 13./14./15./16./17./24.2./22./23.8./28.9./2.10.2017
 ###  (21./24./26./27./28./31.10./4./9.11./5.12.2016)
 ###*****************************************************************************
 
@@ -38,6 +38,29 @@
 #'    \code{discr.min.smaller} \tab TRUE iff the numerically found minimum was
 #'                             smaller than the discrete one.
 #'    }
+#'
+#' @examples
+#' require(stats)
+#'
+#' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 11)
+#'
+#' h <- n^(-1/5)
+#' Ai <- (x0 - Xdata)/h
+#' fnx0 <- mean(dnorm(Ai)) / h   # Parzen-Rosenblatt estimator at x0.
+#'
+#'  # For non-robust method:
+#' Bj <- mean(Xdata) - Xdata
+#'#  # For rank-transformation-based method (requires sorted data):
+#'# Bj <- -J_admissible(1:n / n)   # rank-trafo
+#'
+#' BV <- kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = Bj,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#'
+#' kader:::minimize_MSEHat(VarHat.scaled = BV$VarHat.scaled,
+#'   BiasHat.squared = (BV$BiasHat)^2, sigma = Sigma, Ai = Ai, Bj = Bj,
+#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE, plot = FALSE)
+#'
 minimize_MSEHat <- function(VarHat.scaled, BiasHat.squared, sigma, Ai, Bj, h,
   K, fnx, ticker = FALSE, plot = FALSE, ...) {
 

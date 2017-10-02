@@ -16,3 +16,10 @@ A numeric vector of the Epanechnikov kernel evaluated at the
 \description{
 Vectorized evaluation of the Epanechnikov kernel.
 }
+\examples{
+kader:::epanechnikov(x = c(-sqrt(6:5), -2:2, sqrt(5:6)))
+\donttest{
+curve(kader:::epanechnikov(x), from = -sqrt(6), to = sqrt(6))
+}
+
+}
