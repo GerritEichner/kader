@@ -2,7 +2,7 @@ Package: kader
 Type: Package
 Title: Kernel Adaptive Density Estimation and Regression
 Version: 0.0.8
-Date: 2017-10-02
+Date: 2017-10-04
 Authors@R: person("Gerrit", "Eichner",
                   email = "gerrit.eichner@math.uni-giessen.de",
                   role = c("aut", "cre"))
