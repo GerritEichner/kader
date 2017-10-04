@@ -4,13 +4,13 @@
 ### Fcts. related to the optimal transformation (J) in "Rank Transformations
 ### in Kernel Density Estimation" of Eichner & Stute (2013), like the solution
 ### J to the isoperimetric problem.
-### R 3.4.1, 10./12./13./16.2./21./22./24.8./27./28.9.2017
+### R 3.4.2, 10./12./13./16.2./21./22./24.8./27./28.9./4.10.2017
 ###  (27./31.10./16.11./5.12.2016)
 ###*****************************************************************************
 
 #' Cube-root that retains its argument's sign
 #'
-#' Computes \eqn{(x_1^(1/3), \ldots, x_n^(1/3))} with \eqn{x_i^(1/3)} being
+#' Computes \eqn{(x_1^{1/3}, \ldots, x_n^{1/3})} with \eqn{x_i^{1/3}} being
 #' negative if \eqn{x_i < 0}.
 #'
 #' @param x Numeric vector.
@@ -121,8 +121,8 @@ qc <- function(u, cc = sqrt(5/3)) {
 #' \eqn{J_{1b}(u, c) := J_{1a}(u, c)^2 + p_c^3}, the definition of
 #' \eqn{J_1} reads:
 #'
-#' \eqn{J_1(u, c) :=   [J_{1a}(u, c) + \sqrt(J_{1b}(u, c))]^(1/3)
-#'                   + [J_{1a}(u, c) - \sqrt(J_{1b}(u, c))]^(1/3)}.
+#' \eqn{J_1(u, c) :=   [J_{1a}(u, c) + \sqrt(J_{1b}(u, c))]^{1/3}
+#'                   + [J_{1a}(u, c) - \sqrt(J_{1b}(u, c))]^{1/3}}.
 #'
 #' For implementation details of \eqn{q_c(u)} and \eqn{p_c} see
 #' \code{\link{qc}} and \code{\link{pc}}, respectively.
@@ -175,7 +175,7 @@ J1 <- function(u, cc = sqrt(5/3)) {
 #'
 #' Eq. (20) in Eichner (2017) (based on "Bronstein's formula for k = 3")
 #'
-#' \eqn{J_2(u, c) = 2\sqrt(-p_c) * sin{1/3 * arcsin{q_c(u) / (-p_c)^(3/2)}}}
+#' \eqn{J_2(u, c) = 2\sqrt(-p_c) * sin(1/3 * arcsin(q_c(u) / (-p_c)^{3/2}))}
 #'
 #' For implementation details of \eqn{q_c(u)} and \eqn{p_c} see
 #' \code{\link{qc}} and \code{\link{pc}}, respectively.
@@ -239,13 +239,13 @@ J2 <- function(u, cc = sqrt(5)) {
 #'
 #' Basically, for \code{cc} in \eqn{[\sqrt(5/3), \sqrt 5]}:
 #'
-#' \code{J_admissible(u, cc)} = \code{J1(u, cc)} if \code{cc} \eqn{< \sqrt(3)},
+#' \code{J_admissible(u, cc)} = \code{J1(u, cc)} if \code{cc} \eqn{< \sqrt 3},
 #'
-#' \code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt(3)},
+#' \code{J_admissible(u, cc)} = \code{J2(u, cc)} if \code{cc} \eqn{> \sqrt 3},
 #' and
 #'
 #' \code{J_admissible(u, cc)} = \code{sqrt(3) * (2*u - 1)} if \code{cc}
-#' \eqn{= \sqrt(3)}.
+#' \eqn{= \sqrt 3}.
 #'
 #' @export
 #' @inheritParams J2

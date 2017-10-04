@@ -36,8 +36,6 @@
 #' @examples
 #' require(stats)
 #'
-#'  # Simulation parameters and data generation
-#'  #******************************************
 #'  # Regression function: a polynomial of degree 4 with one maximum (or
 #'  # minimum), one point of inflection, and one saddle point.
 #'  # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
@@ -45,9 +43,9 @@
 #'  # (x1 + x2)/2, and the saddle point at x = x2.
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
-#' }
-#'  # Note: for m()'s default values a minimum is at x = 2, a point of
-#'  # inflection at x = 4, and a saddle point an x = 8.
+#'  }
+#'  # Note: for m()'s default values a minimum is at x = 2, a point
+#'  # of inflection at x = 4, and a saddle point at x = 8.
 #'
 #' n <- 100       # Sample size.
 #' set.seed(42)   # To guarantee reproducibility.
@@ -55,13 +53,12 @@
 #' Y <- m(X) + rnorm(length(X), sd = 5)   # Y_1, ..., Y_n
 #'
 #' x <- seq(-3, 15, length = 51)   # Where the Nadaraya-Watson estimator
-#'                                 # fnhat of m shall be computed.
-#'
-#' fnhat <- nadwat(x = x, dataX = X, dataY = Y, K = dnorm, h = n^(-1/5))
+#'                                 # mn of m shall be computed.
+#' mn <- nadwat(x = x, dataX = X, dataY = Y, K = dnorm, h = n^(-1/5))
 #'
 #' plot(x = X, y = Y);   rug(X)
-#' lines(x = x, y = fnhat, col = "blue")
-#' curve(m, add = TRUE, col = "red")
+#' lines(x = x, y = mn, col = "blue")  # The estimator.
+#' curve(m, add = TRUE, col = "red")   # The "truth".
 #'
 nadwat <- function(x, dataX, dataY, K, h) {
  M <- K(outer(x/h, dataX/h, "-"))   # length(x) x length(Y)
@@ -82,19 +79,19 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #' computational version implemented here, however, is given in (15.19) of
 #' Eichner (2017). Pre-computed \eqn{(x - X_i)/h} and \eqn{(\theta - X_i)/h},
 #' \eqn{i = 1, \ldots, n} are expected for efficiency reasons (and are
-#' currently prepared in function \code{kare}).
+#' currently prepared in function \code{\link{kare}}).
 #'
 #' @export
 #'
 #' @param sigma Numeric vector \eqn{(\sigma_1, \ldots, \sigma_s)} with
 #'              \eqn{s \ge 1} with values of the scale parameter \eqn{\sigma}.
 #' @param xXh Numeric vector expecting the pre-computed h-scaled differences
-#'            \eqn{(x - X_1)/h, \ldots, (x - X_n)/h} where \eqn{x} is the
+#'            \eqn{(x - X_1)/h}, \ldots, \eqn{(x - X_n)/h} where \eqn{x} is the
 #'            single (!) location for which the weights are to be computed,
 #'            the \eqn{X_i}'s are the data values, and \eqn{h} is the numeric
 #'            bandwidth scalar.
 #' @param thetaXh Numeric vector expecting the pre-computed h-scaled differences
-#'                \eqn{(\theta - X_1)/h, \ldots, (\theta - X_n)/h} where
+#'                \eqn{(\theta - X_1)/h}, \ldots, \eqn{(\theta - X_n)/h} where
 #'                \eqn{\theta} is the numeric scalar location parameter, and the
 #'                \eqn{X_i}'s and \eqn{h} are as in \code{xXh}.
 #' @param K A kernel function (with vectorized in- & output) to be used for the
@@ -108,7 +105,7 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #'         \code{length(sigma)} and \eqn{i = 1, \ldots,} \code{length(xXh)};
 #'         otherwise a numeric vector of the same length as \code{xXh}.
 #'
-#' @references Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+#' @references Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 #'
 #' @seealso \code{\link{bias_ES2012}} and \code{\link{var_ES2012}} which both
 #'          call this function, and \code{\link{kare}} which currently does
@@ -117,8 +114,6 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #' @examples
 #' require(stats)
 #'
-#'  # Simulation parameters and data generation
-#'  #******************************************
 #'  # Regression function:
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
@@ -135,7 +130,7 @@ nadwat <- function(x, dataX, dataY, K, h) {
 #' x0 <- 5   # Location at which the estimator of m should be computed.
 #'
 #'  # Weights (W_{ni}(x; \sigma_r))_{1<=r<=length(Sigma), 1<=i<=n} for
-#'  # Var_x0(sigma) and Bias_x0(sigma) on the sigma-grid:
+#'  # Var_n(sigma) and Bias_n(sigma) each at x0 on the sigma-grid:
 #' weights_ES2012(sigma = Sigma, xXh = (x0 - X) / h,
 #'   thetaXh = (mean(X) - X) / h, K = dnorm, h = h)
 #'
@@ -158,7 +153,7 @@ weights_ES2012 <- function(sigma, xXh, thetaXh, K, h) {
 #' The formula can also be found in eq. (15.21) of Eichner (2017).
 #' Pre-computed \eqn{(x - X_i)/h}, \eqn{(\theta - X_i)/h}, and
 #' \eqn{m_n(X_i) - m_n(x)} are expected for efficiency reasons (and are
-#' currently prepared in function \code{kare}).
+#' currently prepared in function \code{\link{kare}}).
 #'
 #' @export
 #'
@@ -168,15 +163,13 @@ weights_ES2012 <- function(sigma, xXh, thetaXh, K, h) {
 #'
 #' @return A numeric vector of the length of \code{sigma}.
 #'
-#' @references Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+#' @references Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 #'
 #' @seealso \code{\link{kare}} which currently does the pre-computing.
 #'
 #' @examples
 #' require(stats)
 #'
-#'  # Simulation parameters and data generation
-#'  #******************************************
 #'  # Regression function:
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
@@ -192,17 +185,17 @@ weights_ES2012 <- function(sigma, xXh, thetaXh, K, h) {
 #' Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
 #' x0 <- 5   # Location at which the estimator of m should be computed.
 #'
-#' mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
-#' mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
-#'                                                      # for i = 1, ..., n.
+#'  # m_n(x_0) and m_n(X_i) for i = 1, ..., n:
+#' mn <- nadwat(x = c(x0, X), dataX = X, dataY = Y, K = dnorm, h = h)
+#'
 #'  # Estimator of Bias_x0(sigma) on the sigma-grid:
 #' (Bn <- bias_ES2012(sigma = Sigma, h = h, xXh = (x0 - X) / h,
-#'   thetaXh = (mean(X) - X) / h, K = dnorm, mmDiff = mnX - mnx0))
+#'   thetaXh = (mean(X) - X) / h, K = dnorm, mmDiff = mn[-1] - mn[1]))
 #'
 #' \dontrun{
-#'  # Visualizing the estimator of Bias_x0(sigma) on the sigma-grid:
+#'  # Visualizing the estimator of Bias_n(sigma) at x on the sigma-grid:
 #' plot(Sigma, Bn, type = "o", xlab = expression(sigma), ylab = "",
-#'   main = bquote(widehat("Bias")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+#'   main = bquote(widehat("Bias")[n](sigma)~~"at"~~x==.(x0)))
 #' }
 #'
 bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
@@ -219,25 +212,23 @@ bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
 #' The formula can also be found in eq. (15.22) of Eichner (2017).
 #' Pre-computed \eqn{(x - X_i)/h}, \eqn{(\theta - X_i)/h}, and
 #' \eqn{(Y_i - m_n(x))^2} are expected for efficiency reasons (and are
-#' currently prepared in function \code{kare}).
+#' currently prepared in function \code{\link{kare}}).
 #'
 #' @export
 #'
 #' @inheritParams weights_ES2012
 #' @param YmDiff2 Numeric vector of the pre-computed squared differences
-#'                \eqn{(Y_1 - m_n(x))^2, \ldots, (Y_n - m_n(x))^2}.
+#'                \eqn{(Y_1 - m_n(x))^2}, \ldots, \eqn{(Y_n - m_n(x))^2}.
 #'
 #' @return A numeric vector of the length of \code{sigma}.
 #'
-#' @references Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+#' @references Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 #'
 #' @seealso \code{\link{kare}} which currently does the pre-computing.
 #'
 #' @examples
 #' require(stats)
 #'
-#'  # Simulation parameters and data generation
-#'  #******************************************
 #'  # Regression function:
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
@@ -253,7 +244,6 @@ bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
 #' Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
 #' x0 <- 5   # Location at which the estimator of m should be computed.
 #'
-#' mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
 #' mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
 #'                                                      # for i = 1, ..., n.
 #'  # Estimator of Var_x0(sigma) on the sigma-grid:
@@ -261,9 +251,9 @@ bias_ES2012 <- function(sigma, h, xXh, thetaXh, K, mmDiff) {
 #'   thetaXh = (mean(X) - X) / h, K = dnorm, YmDiff2 = (Y - mnX)^2))
 #'
 #' \dontrun{
-#'  # Visualizing the estimator of Var_x0(sigma) on the sigma-grid:
+#'  # Visualizing the estimator of Var_n(sigma) at x0 on the sigma-grid:
 #' plot(Sigma, Vn, type = "o", xlab = expression(sigma), ylab = "",
-#'   main = bquote(widehat("Var")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+#'   main = bquote(widehat("Var")[n](sigma)~~"at"~~x==.(x0)))
 #' }
 #'
 var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
@@ -350,39 +340,30 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #'   \code{MSE} \tab Ditto for the MSE. \cr
 #'   }
 #'
-#' @references Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+#' @references Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 #'
 #' @examples
 #' require(stats)
 #'
-#'  # Simulation parameters and data generation
-#'  #******************************************
-#'  # Regression function: a polynomial of degree 4 with one maximum (or
-#'  # minimum), one point of inflection, and one saddle point.
-#'  # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
-#'  # is at x = (3*x1 + x2)/4, the point of inflection is at x =
-#'  # (x1 + x2)/2, and the saddle point at x = x2.
+#'  # Regression function:
 #' m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
 #'  a * (x - x1) * (x - x2)^3 + b
 #' }
-#'  # Note: for m()'s default values a minimum is at x = 2, a point of
-#'  # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
-#'  # point would, e.g., be at x = 5.
+#'  # Note: For a few details on m() see examples in ?nadwat.
 #'
 #' x0 <- 5   # The point x_0 at which the MSE-optimal kernel adjusted
 #'  # nonparametric estimation of m should take place. (Recall: for m's
 #'  # default values a minimum is at 2, a point of inflection at 4, and
 #'  # a saddle point an 8; an "arbitrary" point would, e.g., be at 5.)
 #'
-#' n <- 100   # Sample size
+#' n <- 100   # Sample size.
 #' sdeps <- 1   # Std. dev. of the \epsilon_i: \sqrt(Var(Y|X=x))
-#'              # (here: constant in x)
+#'              # (here: constant in x).
 #' design.ctr <- x0 + 0.5   # "centre" and "scale" of the design, i.e.,
 #' design.scl <- 1  # in the normal scenario below, expected value and
 #'                  # std. dev. of the distribution of the x_i's.
 #'
-#' set.seed(42)   # to guanrantee reproducibility.
-#'
+#' set.seed(42)   # To guarantee reproducibility.
 #' x <- rnorm(n, mean = design.ctr, sd = design.scl)   # x_1, ..., x_n
 #' Y <- m(x) + rnorm(length(x), sd = sdeps)            # Y_1, ..., Y_n
 #' data <- data.frame(x = x, y = Y)
@@ -425,26 +406,26 @@ var_ES2012 <- function(sigma, h, xXh, thetaXh, K, YmDiff2) {
 #'             as.expression(bquote(paste(hat(m)[n](x[0]), "  at  ",
 #'                                        x[0] == .(x0))))))
 #'
-#'  # Visualizing the estimators of (Bias_x0(sigma))^2 and
-#'  # Var_x0(sigma) on the sigma-grid:
+#'  # Visualizing the estimators of (Bias_n(sigma))^2 and
+#'  # Var_n(sigma) at x0 on the sigma-grid:
 #' with(fit,
 #'   matplot(Sigma, cbind(Bn*Bn, Vn2), type = "l", lty = 1:2,
 #'    col = c("black", "red"), xlab = expression(sigma), ylab = ""))
 #'
-#'  # The legend for (Bias_x0(sigma))^2 and Var_x0(sigma):
+#'  # The legend for (Bias_n(sigma))^2 and Var_n(sigma):
 #' legend("topleft", lty = 1:2, col = c("black", "red"), bty = "n",
-#'   legend = c(expression(paste(widehat(plain(Bias))[x[0]]^2, (sigma))),
-#'              expression(widehat(plain(Var))[x[0]](sigma))),
+#'   legend = c(expression(paste(widehat(plain(Bias))[n]^2, (sigma))),
+#'              expression(widehat(plain(Var))[n](sigma))),
 #'   cex = 1.2)
 #'
-#'  # Visualizing the estimator of MSE_x0(sigma) on the sigma-grid together
-#'  # with the point indicating the detected minimum, and a legend:
+#'  # Visualizing the estimator of MSE_n(sigma) at x0 on the sigma-grid
+#'  # together with the point indicating the detected minimum, and a legend:
 #' plot(fit$Sigma, fit$MSE, type = "l",
 #'  xlab = expression(sigma), ylab = "")
 #' points(fit$sigma.adap, fit$msehat.min, pch = 4, col = "red", cex = 2)
 #' legend("topleft", lty = c(1, NA), pch = c(NA, 4),
 #'  col = c("black", "red"), bty = "n", cex = 1.2,
-#'  legend = c(expression(widehat(plain(MSE))[x[0]](sigma)),
+#'  legend = c(expression(widehat(plain(MSE))[n](sigma)),
 #'             substitute(group("(", list(plain(Minimizer),
 #'                                        plain(Minimum)), ")")
 #'                          == group("(", list(x, y), ")"),

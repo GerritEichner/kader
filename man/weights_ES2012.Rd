@@ -11,13 +11,13 @@ weights_ES2012(sigma, xXh, thetaXh, K, h)
 \eqn{s \ge 1} with values of the scale parameter \eqn{\sigma}.}
 
 \item{xXh}{Numeric vector expecting the pre-computed h-scaled differences
-\eqn{(x - X_1)/h, \ldots, (x - X_n)/h} where \eqn{x} is the
+\eqn{(x - X_1)/h}, \ldots, \eqn{(x - X_n)/h} where \eqn{x} is the
 single (!) location for which the weights are to be computed,
 the \eqn{X_i}'s are the data values, and \eqn{h} is the numeric
 bandwidth scalar.}
 
 \item{thetaXh}{Numeric vector expecting the pre-computed h-scaled differences
-\eqn{(\theta - X_1)/h, \ldots, (\theta - X_n)/h} where
+\eqn{(\theta - X_1)/h}, \ldots, \eqn{(\theta - X_n)/h} where
 \eqn{\theta} is the numeric scalar location parameter, and the
 \eqn{X_i}'s and \eqn{h} are as in \code{xXh}.}
 
@@ -46,13 +46,11 @@ Eichner & Stute (2012) is a function of \eqn{\sigma}. In fact, \eqn{W_{ni}
 computational version implemented here, however, is given in (15.19) of
 Eichner (2017). Pre-computed \eqn{(x - X_i)/h} and \eqn{(\theta - X_i)/h},
 \eqn{i = 1, \ldots, n} are expected for efficiency reasons (and are
-currently prepared in function \code{kare}).
+currently prepared in function \code{\link{kare}}).
 }
 \examples{
 require(stats)
 
- # Simulation parameters and data generation
- #******************************************
  # Regression function:
 m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
  a * (x - x1) * (x - x2)^3 + b
@@ -69,13 +67,13 @@ Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
 x0 <- 5   # Location at which the estimator of m should be computed.
 
  # Weights (W_{ni}(x; \\sigma_r))_{1<=r<=length(Sigma), 1<=i<=n} for
- # Var_x0(sigma) and Bias_x0(sigma) on the sigma-grid:
+ # Var_n(sigma) and Bias_n(sigma) each at x0 on the sigma-grid:
 weights_ES2012(sigma = Sigma, xXh = (x0 - X) / h,
   thetaXh = (mean(X) - X) / h, K = dnorm, h = h)
 
 }
 \references{
-Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 }
 \seealso{
 \code{\link{bias_ES2012}} and \code{\link{var_ES2012}} which both

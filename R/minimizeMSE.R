@@ -51,8 +51,8 @@
 #'
 #'  # For non-robust method:
 #' Bj <- mean(Xdata) - Xdata
-#'#  # For rank-transformation-based method (requires sorted data):
-#'# Bj <- -J_admissible(1:n / n)   # rank-trafo
+#'#  # For rank transformation-based method (requires sorted data):
+#'# Bj <- -J_admissible(1:n / n)   # rank trafo
 #'
 #' BV <- kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = Bj,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)

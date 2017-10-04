@@ -95,24 +95,21 @@ set.seed(2017);     n <- 80;     d <- rnorm(n)
 
  # Estimating f(x0) for one sigma-value
 x0 <- 1
-fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
-print(fit)
+(fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1))
 \donttest{
  # Estimating f(x0) for sigma-grid
 x0 <- 1
-fit <- kade(x = x0, data = d, method = "nonrobust",
-  Sigma = seq(0.01, 10, length = 10), ticker = TRUE)
-print(fit)
+(fit <- kade(x = x0, data = d, method = "nonrobust",
+  Sigma = seq(0.01, 10, length = 10), ticker = TRUE))
 }
 \dontrun{
  # Estimating f(x0) for sigma-grid and Old-Faithful-eruptions-data
 x0 <- 2
-fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
-  Sigma = seq(0.01, 10, length = 51), ticker = TRUE, plot = TRUE)
-print(fit)
+(fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
+  Sigma = seq(0.01, 10, length = 51), ticker = TRUE, plot = TRUE))
 }
 }
 \references{
 Srihera & Stute (2011), Eichner & Stute (2013), and Eichner
-            (2017): see \link{kader}.
+            (2017): see \code{\link{kader}}.
 }

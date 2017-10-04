@@ -91,34 +91,25 @@ and technical details can be found in Eichner (2017).
 \examples{
 require(stats)
 
- # Simulation parameters and data generation
- #******************************************
- # Regression function: a polynomial of degree 4 with one maximum (or
- # minimum), one point of inflection, and one saddle point.
- # Memo: for p(x) = a * (x - x1) * (x - x2)^3 + b the max. (or min.)
- # is at x = (3*x1 + x2)/4, the point of inflection is at x =
- # (x1 + x2)/2, and the saddle point at x = x2.
+ # Regression function:
 m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
  a * (x - x1) * (x - x2)^3 + b
 }
- # Note: for m()'s default values a minimum is at x = 2, a point of
- # inflection at x = 4, and a saddle point an x = 8; an "arbitrary"
- # point would, e.g., be at x = 5.
+ # Note: For a few details on m() see examples in ?nadwat.
 
 x0 <- 5   # The point x_0 at which the MSE-optimal kernel adjusted
  # nonparametric estimation of m should take place. (Recall: for m's
  # default values a minimum is at 2, a point of inflection at 4, and
  # a saddle point an 8; an "arbitrary" point would, e.g., be at 5.)
 
-n <- 100   # Sample size
+n <- 100   # Sample size.
 sdeps <- 1   # Std. dev. of the \\epsilon_i: \\sqrt(Var(Y|X=x))
-             # (here: constant in x)
+             # (here: constant in x).
 design.ctr <- x0 + 0.5   # "centre" and "scale" of the design, i.e.,
 design.scl <- 1  # in the normal scenario below, expected value and
                  # std. dev. of the distribution of the x_i's.
 
-set.seed(42)   # to guanrantee reproducibility.
-
+set.seed(42)   # To guarantee reproducibility.
 x <- rnorm(n, mean = design.ctr, sd = design.scl)   # x_1, ..., x_n
 Y <- m(x) + rnorm(length(x), sd = sdeps)            # Y_1, ..., Y_n
 data <- data.frame(x = x, y = Y)
@@ -161,26 +152,26 @@ legend("topleft", lty = c(2, NA), pch = c(NA, 4),
             as.expression(bquote(paste(hat(m)[n](x[0]), "  at  ",
                                        x[0] == .(x0))))))
 
- # Visualizing the estimators of (Bias_x0(sigma))^2 and
- # Var_x0(sigma) on the sigma-grid:
+ # Visualizing the estimators of (Bias_n(sigma))^2 and
+ # Var_n(sigma) at x0 on the sigma-grid:
 with(fit,
   matplot(Sigma, cbind(Bn*Bn, Vn2), type = "l", lty = 1:2,
    col = c("black", "red"), xlab = expression(sigma), ylab = ""))
 
- # The legend for (Bias_x0(sigma))^2 and Var_x0(sigma):
+ # The legend for (Bias_n(sigma))^2 and Var_n(sigma):
 legend("topleft", lty = 1:2, col = c("black", "red"), bty = "n",
-  legend = c(expression(paste(widehat(plain(Bias))[x[0]]^2, (sigma))),
-             expression(widehat(plain(Var))[x[0]](sigma))),
+  legend = c(expression(paste(widehat(plain(Bias))[n]^2, (sigma))),
+             expression(widehat(plain(Var))[n](sigma))),
   cex = 1.2)
 
- # Visualizing the estimator of MSE_x0(sigma) on the sigma-grid together
- # with the point indicating the detected minimum, and a legend:
+ # Visualizing the estimator of MSE_n(sigma) at x0 on the sigma-grid
+ # together with the point indicating the detected minimum, and a legend:
 plot(fit$Sigma, fit$MSE, type = "l",
  xlab = expression(sigma), ylab = "")
 points(fit$sigma.adap, fit$msehat.min, pch = 4, col = "red", cex = 2)
 legend("topleft", lty = c(1, NA), pch = c(NA, 4),
  col = c("black", "red"), bty = "n", cex = 1.2,
- legend = c(expression(widehat(plain(MSE))[x[0]](sigma)),
+ legend = c(expression(widehat(plain(MSE))[n](sigma)),
             substitute(group("(", list(plain(Minimizer),
                                        plain(Minimum)), ")")
                          == group("(", list(x, y), ")"),
@@ -192,5 +183,5 @@ par(op) # Restoring the previous settings of the graphics device.
 
 }
 \references{
-Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 }

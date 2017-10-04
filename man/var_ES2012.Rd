@@ -14,13 +14,13 @@ var_ES2012(sigma, h, xXh, thetaXh, K, YmDiff2)
 \code{thetaXh} and \code{xXh}).}
 
 \item{xXh}{Numeric vector expecting the pre-computed h-scaled differences
-\eqn{(x - X_1)/h, \ldots, (x - X_n)/h} where \eqn{x} is the
+\eqn{(x - X_1)/h}, \ldots, \eqn{(x - X_n)/h} where \eqn{x} is the
 single (!) location for which the weights are to be computed,
 the \eqn{X_i}'s are the data values, and \eqn{h} is the numeric
 bandwidth scalar.}
 
 \item{thetaXh}{Numeric vector expecting the pre-computed h-scaled differences
-\eqn{(\theta - X_1)/h, \ldots, (\theta - X_n)/h} where
+\eqn{(\theta - X_1)/h}, \ldots, \eqn{(\theta - X_n)/h} where
 \eqn{\theta} is the numeric scalar location parameter, and the
 \eqn{X_i}'s and \eqn{h} are as in \code{xXh}.}
 
@@ -28,7 +28,7 @@ bandwidth scalar.}
 estimator.}
 
 \item{YmDiff2}{Numeric vector of the pre-computed squared differences
-\eqn{(Y_1 - m_n(x))^2, \ldots, (Y_n - m_n(x))^2}.}
+\eqn{(Y_1 - m_n(x))^2}, \ldots, \eqn{(Y_n - m_n(x))^2}.}
 }
 \value{
 A numeric vector of the length of \code{sigma}.
@@ -41,13 +41,11 @@ Variance estimator \eqn{Var_n(\sigma)}, vectorized in \eqn{\sigma}, on p.
 The formula can also be found in eq. (15.22) of Eichner (2017).
 Pre-computed \eqn{(x - X_i)/h}, \eqn{(\theta - X_i)/h}, and
 \eqn{(Y_i - m_n(x))^2} are expected for efficiency reasons (and are
-currently prepared in function \code{kare}).
+currently prepared in function \code{\link{kare}}).
 }
 \examples{
 require(stats)
 
- # Simulation parameters and data generation
- #******************************************
  # Regression function:
 m <- function(x, x1 = 0, x2 = 8, a = 0.01, b = 0) {
  a * (x - x1) * (x - x2)^3 + b
@@ -63,7 +61,6 @@ h <- n^(-1/5)
 Sigma <- seq(0.01, 10, length = 51)   # sigma-grid for minimization.
 x0 <- 5   # Location at which the estimator of m should be computed.
 
-mnx0 <- nadwat(x = x0, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(x_0)
 mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
                                                      # for i = 1, ..., n.
  # Estimator of Var_x0(sigma) on the sigma-grid:
@@ -71,14 +68,14 @@ mnX  <- nadwat(x = X, dataX = X, dataY = Y, K = dnorm, h = h) # m_n(X_i)
   thetaXh = (mean(X) - X) / h, K = dnorm, YmDiff2 = (Y - mnX)^2))
 
 \dontrun{
- # Visualizing the estimator of Var_x0(sigma) on the sigma-grid:
+ # Visualizing the estimator of Var_n(sigma) at x0 on the sigma-grid:
 plot(Sigma, Vn, type = "o", xlab = expression(sigma), ylab = "",
-  main = bquote(widehat("Var")[x[0]](sigma)~~"for"~~x[0]==.(x0)))
+  main = bquote(widehat("Var")[n](sigma)~~"at"~~x==.(x0)))
 }
 
 }
 \references{
-Eichner & Stute (2012) and Eichner (2017): see \link{kader}.
+Eichner & Stute (2012) and Eichner (2017): see \code{\link{kader}}.
 }
 \seealso{
 \code{\link{kare}} which currently does the pre-computing.

@@ -38,7 +38,7 @@ An object with class "density" whose underlying structure is
                 allowed here.) \cr
  \code{call}      \tab the call which produced the result. \cr
  \code{data.name} \tab the deparsed name of the x argument. \cr
- \code{has.na}    \tab logical, for compatibility (always FALSE). \cr
+ \code{has.na}    \tab logical, for compatibility (always FALSE). \cr\cr
  Additionally: \tab \cr
  \code{ranktrafo} \tab as in Arguments. \cr
  \code{sigma} \tab as in Arguments. \cr

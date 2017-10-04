@@ -13,20 +13,20 @@ bias_AND_scaledvar(sigma, Ai, Bj, h, K, fnx, ticker = FALSE)
 \item{Ai}{Numeric vector expecting \eqn{(x_0 - X_1, \ldots, x_0 - X_n) / h},
 where (usually) \eqn{x_0} is the point at which the density is to
 be estimated for the data \eqn{X_1, \ldots, X_n} with
-\eqn{h = n^(-1/5)}.}
+\eqn{h = n^{-1/5}}.}
 
 \item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in case
-of the rank-transformation method, but \eqn{(\hat{\theta} - X_1,
+of the rank transformation method, but \eqn{(\hat{\theta} - X_1,
 \ldots, \hat{\theta} - X_n)} in case of the non-robust
 Srihera-Stute-method. (Note that this the same as argument
 \code{Bj} of \code{\link{adaptive_fnhat}}!)}
 
-\item{h}{Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.}
+\item{h}{Numeric scalar, where (usually) \eqn{h = n^{-1/5}}.}
 
 \item{K}{Kernel function with vectorized in- & output.}
 
-\item{fnx}{\eqn{f_n(x_0) =} \code{mean(K(Ai))/h}, where typically
-\eqn{h = n^{(-1/5)}}.}
+\item{fnx}{\eqn{f_n(x_0) =} \code{mean(K(Ai))/h}, where here typically
+\eqn{h = n^{-1/5}}.}
 
 \item{ticker}{Logical; determines if a 'ticker' documents the iteration
 progress through \code{sigma}. Defaults to FALSE.}
@@ -39,7 +39,7 @@ A list with components \code{BiasHat} and \code{VarHat.scaled}, both
 ``Workhorse'' function for vectorized (in \eqn{\sigma}) computation of both
 the bias estimator and the scaled variance estimator of eq. (2.3) in Srihera
 & Stute (2011), and for the analogous computation of the bias and scaled
-variance estimator for the rank-transformation method in the paragraph
+variance estimator for the rank transformation method in the paragraph
 after eq. (6) in Eichner & Stute (2013).
 }
 \examples{
@@ -57,8 +57,8 @@ theta.X <- mean(Xdata) - Xdata
 kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 
- # rank-transformation-based method (requires sorted data):
-negJ <- -J_admissible(1:n / n)   # rank-trafo
+ # rank transformation-based method (requires sorted data):
+negJ <- -J_admissible(1:n / n)   # rank trafo
 kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 

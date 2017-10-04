@@ -4,7 +4,7 @@
 ### Functions for computing the adaptive density estimator for "Kernel
 ### adjusted density estimation" of Srihera & Stute (2011) and for "Rank
 ### Transformations in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 8./13./14./15./16./17./24.2./21./22./23./24./25.8./27./28.9.2017
+### R 3.4.2, 8./13./14./15./16./17./24.2./21./22./23./24./25.8./27./28.9./4.10.2017
 ###  (6./7./10.2.2015 / 21./24./26./28./31.10./2./4./8./9./18.11./5.12.2016)
 ###*****************************************************************************
 
@@ -16,7 +16,7 @@
 #' Implementation of both eq. (1.6) in Srihera & Stute (2011) for given and
 #' fixed scalars \eqn{\sigma} and \eqn{\theta}, and eq. (4) in Eichner & Stute
 #' (2013) for a given and fixed scalar \eqn{\sigma} and for a given and fixed
-#' rank-transformation (and, of course, for fixed and given location(s) in
+#' rank transformation (and, of course, for fixed and given location(s) in
 #' \eqn{x}, data \eqn{(X_1, \ldots, X_n)}, a kernel function \eqn{K} and a
 #' bandwidth \eqn{h}). The formulas that the computational version implemented
 #' here is based upon are given in eq. (15.3) and eq. (15.9), respectively, of
@@ -33,10 +33,10 @@
 #'          the estimator.
 #' @param h Numeric scalar for bandwidth \eqn{h}.
 #' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} as
-#'           produced in \code{\link{fnhat_SS2011}} in case of the
-#'           rank-transformation method (using an admissible rank-transformation
+#'           produced in \code{\link{fnhat_SS2011}} in case of the rank
+#'           transformation method (using an admissible rank transformation
 #'           as implemented by \code{\link{J_admissible}}), but
-#'           \eqn{(\hat \theta - X_1, \ldots, \hat \theta - X_n)} as produced
+#'           \eqn{(\hat \theta - X_1}, \ldots, \eqn{\hat \theta - X_n)} as produced
 #'           in \code{\link{fnhat_ES2013}} in case of the non-robust method.
 #' @param sigma Numeric scalar for value of scale parameter \eqn{\sigma}.
 #'
@@ -44,22 +44,22 @@
 #'         density values from eq. (1.6) of Srihera & Stute (2011) or eq. (4)
 #'         of Eichner & Stute (2013).
 #'
-#' @note In case of the rank-transformation method the data are expected to
+#' @note In case of the rank transformation method the data are expected to
 #'       be sorted in increasing order.
 #'
 #' @references Srihera & Stute (2011), Eichner and Stute (2013), and Eichner
-#'             (2017): see \link{kader}.
+#'             (2017): see \code{\link{kader}}.
 #'
 #' @examples
 #' require(stats)
 #'
 #'  # The kernel density estimators for simulated N(0,1)-data and a single
-#'  # sigma-value evaluated on a grid using the rank-transformation and
+#'  # sigma-value evaluated on a grid using the rank transformation and
 #'  # the non-robust method:
 #' set.seed(2017);     n <- 100;     Xdata <- rnorm(n)
 #' xgrid <- seq(-4, 4, by = 0.1)
-#' negJ <- -J_admissible(1:n / n)   # rank-trafo
-#' compute_fnhat(x = xgrid, data = sort(Xdata),   # requires sorted data
+#' negJ <- -J_admissible(1:n / n)                 # The rank trafo requires
+#' compute_fnhat(x = xgrid, data = sort(Xdata),   # sorted data!
 #'   K = dnorm, h = n^(-1/5), Bj = negJ, sigma = 1)
 #'
 #' theta.X <- mean(Xdata) - Xdata    # non-robust method
@@ -120,7 +120,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'                 not allowed here.) \cr
 #'  \code{call}      \tab the call which produced the result. \cr
 #'  \code{data.name} \tab the deparsed name of the x argument. \cr
-#'  \code{has.na}    \tab logical, for compatibility (always FALSE). \cr
+#'  \code{has.na}    \tab logical, for compatibility (always FALSE). \cr\cr
 #'  Additionally: \tab \cr
 #'  \code{theta} \tab as in Arguments. \cr
 #'  \code{sigma} \tab as in Arguments. \cr
@@ -136,22 +136,19 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #'  # Simulated N(0,1)-data and one sigma-value
 #' set.seed(2017);     n <- 100;     d <- rnorm(n)
 #' xgrid <- seq(-4, 4, by = 0.1)
-#' fit <- fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
-#'   theta = mean(d), sigma = 1)
-#' print(fit)
+#' (fit <- fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
+#'   theta = mean(d), sigma = 1))
 #' \donttest{
 #' plot(fit, ylim = range(0, dnorm(0), fit$y), col = "blue")
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("blue", "black", "red"),
-#'   legend = expression(tilde(f)[n], phi, "data"))
-#' }
+#'   legend = expression(tilde(f)[n], phi, "data")) }
 #' \donttest{
 #'  # The same data, but several sigma-values
 #' sigmas <- seq(1, 4, length = 4)
-#' fit <- lapply(sigmas, function(sig)
+#' (fit <- lapply(sigmas, function(sig)
 #'   fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
-#'     theta = mean(d), sigma = sig))
-#' print(fit)
+#'     theta = mean(d), sigma = sig)))
 #'
 #' ymat <- sapply(fit, "[[", "y")
 #' matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
@@ -159,16 +156,14 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' curve(dnorm, add = TRUE);   rug(d, col = "red")
 #' legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
 #'   legend = expression(phi, "data",
-#'     paste(tilde(f)[n], " (in other colors)")))
-#' }
+#'     paste(tilde(f)[n], " (in other colors)"))) }
 #' \donttest{
 #'  # Old-Faithful-eruptions-data and several sigma-values
 #' d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
 #' xgrid <- seq(er[1], er[2], by = 0.1);    sigmas <- seq(1, 4, length = 4)
-#' fit <- lapply(sigmas, function(sig)
+#' (fit <- lapply(sigmas, function(sig)
 #'    fnhat_SS2011(x = xgrid, data = d, K = dnorm, h = n^(-1/5),
-#'      theta = mean(d), sigma = sig))
-#' print(fit)
+#'      theta = mean(d), sigma = sig)))
 #'
 #' ymat <- sapply(fit, "[[", "y");     dfit <- density(d, bw = "sj")
 #' plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
@@ -176,8 +171,7 @@ compute_fnhat <- function(x, data, K, h, Bj, sigma) {
 #' matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
 #' legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
 #'   legend = expression("R's est.", "data",
-#'     paste(tilde(f)[n], " (in other colors)")))
-#' }
+#'     paste(tilde(f)[n], " (in other colors)"))) }
 fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
   if(any(is.na(data) | is.infinite(data)))
     stop("Missing or infinite values in data not allowed!")
@@ -237,7 +231,7 @@ fnhat_SS2011 <- function(x, data, K, h, theta, sigma) {
 #'                 allowed here.) \cr
 #'  \code{call}      \tab the call which produced the result. \cr
 #'  \code{data.name} \tab the deparsed name of the x argument. \cr
-#'  \code{has.na}    \tab logical, for compatibility (always FALSE). \cr
+#'  \code{has.na}    \tab logical, for compatibility (always FALSE). \cr\cr
 #'  Additionally: \tab \cr
 #'  \code{ranktrafo} \tab as in Arguments. \cr
 #'  \code{sigma} \tab as in Arguments. \cr
@@ -332,15 +326,14 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #'
 #' The computational procedure in this function can be highly iterative because
 #' for each point in \code{x} (and hence for each row of matrix \code{Ai}) the
-#' MSE estimator is computed as a function of \eqn{\sigma} on a - usually fine -
+#' MSE estimator is computed as a function of \eqn{\sigma} on a (usually fine)
 #' \eqn{\sigma}-grid provided through \code{sigma}. This happens by repeated
 #' calls to \code{\link{bias_AND_scaledvar}()}. The minimization in \eqn{\sigma}
 #' is then performed by \code{\link{minimize_MSEHat}()} using both a discrete
 #' grid-search and the numerical optimization routine implemented in base R's
-#' \code{optimize()}.
-#' Finally, \code{\link{compute_fnhat}()} yields the actual value of the density
-#' estimator for the adapted \eqn{\sigma}, i.e., for the MSE-estimator-minimizing
-#' \eqn{\sigma}.
+#' \code{optimize()}. Finally, \code{\link{compute_fnhat}()} yields the actual
+#' value of the density estimator for the adapted \eqn{\sigma}, i.e., for the
+#' MSE-estimator-minimizing \eqn{\sigma}.
 #' (If necessary the computation over the \eqn{\sigma}-grid is repeated after
 #' extending the range of the grid until the estimator functions for both bias
 #' and variance are \emph{not constant} across the \eqn{\sigma}-grid.)
@@ -352,21 +345,22 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #' @param data Numeric vector \eqn{(X_1, \ldots, X_n)} of the data from which
 #'             the estimate is to be computed.
 #' @param K Kernel function with vectorized in- & output.
-#' @param h Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.
+#' @param h Numeric scalar, where (usually) \eqn{h = n^{-1/5}}.
 #' @param sigma Numeric vector \eqn{(\sigma_1, \ldots, \sigma_s)} with
 #'              \eqn{s \ge 1}.
 #' @param Ai Numeric matrix expecting in its i-th row \eqn{(x_i - X_1, \ldots,
 #'           x_i - X_n)/h}, where (usually) \eqn{x_1, \ldots, x_k} with
 #'           \eqn{k =} \code{length(x)} are the points at which the density is
-#'           to be estimated for the data \eqn{X_1, \ldots, X_n} with \eqn{h =
-#'           n^(-1/5)}.
+#'           to be estimated for the data \eqn{X_1, \ldots, X_n} with
+#'           \eqn{h = n^{-1/5}}.
 #' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in
-#'           case of the rank-transformation method, but \eqn{(\hat \theta -
+#'           case of the rank transformation method, but \eqn{(\hat \theta -
 #'           X_1, \ldots, \hat \theta - X_n)} in case of the non-robust
 #'           Srihera-Stute-method.
 #' @param fnx Numeric vector expecting \eqn{(f_n(x_1), \ldots, f_n(x_k))} with
-#'            \eqn{(f_n(x_i) =} \code{mean(K(Ai[i,]))/h} the Parzen-Rosenblatt
-#'            estimator at \eqn{x_i}, where typically \eqn{h = n^{(-1/5)}}.
+#'            \eqn{f_n(x_i)} the Parzen-Rosenblatt estimator at \eqn{x_i}, i.e.,
+#'            \eqn{f_n(x_i) =} \code{mean(K(Ai[i,]))/h} where here typically
+#'            \code{h} \eqn{= n^{-1/5}}.
 #' @param ticker Logical; determines if a 'ticker' documents the iteration
 #'               progress through \code{sigma}. Defaults to FALSE.
 #' @param plot Logical or character or numeric and indicates if graphical
@@ -409,11 +403,11 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #' \dontrun{
 #' require(stats)
 #'
-#'  # Kernel adaptive density estimators for simulated N(0,1)-data computed
-#'  # on an x-grid using the rank-transformation and the non-robust method:
+#'  # Kernel adaptive density estimators for simulated N(0,1)-data
+#'  # computed on an x-grid using the rank transformation and the
+#'  # non-robust method:
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
-#' x <- seq(-4, 4, by = 0.5)
-#' Sigma <- seq(0.01, 10, length = 51)
+#' x <- seq(-4, 4, by = 0.5);     Sigma <- seq(0.01, 10, length = 51)
 #' h <- n^(-1/5)
 #'
 #' x.X_h <- outer(x/h, Xdata/h, "-")
@@ -424,8 +418,8 @@ fnhat_ES2013 <- function(x, data, K, h, ranktrafo, sigma) {
 #' adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
 #'   Ai = x.X_h, Bj = theta.X, fnx = fnx, ticker = TRUE, plot = TRUE)
 #'
-#'  # rank-transformation-based method (requires sorted data):
-#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#'  # rank transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank trafo
 #' adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
 #'   Ai = x.X_h, Bj = negJ, fnx = fnx, ticker = TRUE, plot = TRUE)
 #' }
@@ -603,7 +597,7 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
 #'   just described structure.
 #'
 #' @references Srihera & Stute (2011), Eichner & Stute (2013), and Eichner
-#'             (2017): see \link{kader}.
+#'             (2017): see \code{\link{kader}}.
 #'
 #' @examples
 #' require(stats)
@@ -613,21 +607,18 @@ adaptive_fnhat <- function(x, data, K, h, sigma, Ai, Bj, fnx, ticker = FALSE,
 #'
 #'  # Estimating f(x0) for one sigma-value
 #' x0 <- 1
-#' fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1)
-#' print(fit)
+#' (fit <- kade(x = x0, data = d, method = "nonrobust", Sigma = 1))
 #' \donttest{
 #'  # Estimating f(x0) for sigma-grid
 #' x0 <- 1
-#' fit <- kade(x = x0, data = d, method = "nonrobust",
-#'   Sigma = seq(0.01, 10, length = 10), ticker = TRUE)
-#' print(fit)
+#' (fit <- kade(x = x0, data = d, method = "nonrobust",
+#'   Sigma = seq(0.01, 10, length = 10), ticker = TRUE))
 #' }
 #' \dontrun{
 #'  # Estimating f(x0) for sigma-grid and Old-Faithful-eruptions-data
 #' x0 <- 2
-#' fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
-#'   Sigma = seq(0.01, 10, length = 51), ticker = TRUE, plot = TRUE)
-#' print(fit)
+#' (fit <- kade(x = x0, data = faithful$eruptions, method = "nonrobust",
+#'   Sigma = seq(0.01, 10, length = 51), ticker = TRUE, plot = TRUE))
 #' }
 kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
   kernel = c("gaussian", "epanechnikov", "rectangular"),
@@ -695,7 +686,7 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
     if(method == "both") message("and the")
 
     y2 <- if(method %in% c("both", "robust")) {
-      message("rank-transformation-based robust adaptive method of ",
+      message("rank transformation-based robust adaptive method of ",
               "Eichner & Stute (2013)", appendLF = FALSE)
       # (Note: sorting the data will happen in fnhat_ES2013().)
       fnhat_ES2013(x = x, data = data, K = Kadap, h = h,
@@ -731,9 +722,9 @@ kade <- function(x, data,  # Someday to be adapted to args. of fct. density?
     if(method == "both") message("and the")
 
     y2 <- if(method %in% c("both", "robust")) {
-      message("rank-transformation-based robust adaptive method of ",
+      message("rank transformation-based robust adaptive method of ",
               "Eichner & Stute (2013)", appendLF = FALSE)
-      # Rank-transformation-values: This is why the data *must* be sorted!
+      # Rank transformation-values: This is why the data *must* be sorted!
       negRT <- -ranktrafo(1:n / n)  # B_j
       adaptive_fnhat(x = x, data = data, K = Kadap, h = h, sigma = Sigma,
         Ai = x.X_h.matrix, Bj = negRT, fnx = fnx, ticker = ticker,

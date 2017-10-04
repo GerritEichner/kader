@@ -16,7 +16,7 @@ the estimate is to be computed.}
 
 \item{K}{Kernel function with vectorized in- & output.}
 
-\item{h}{Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.}
+\item{h}{Numeric scalar, where (usually) \eqn{h = n^{-1/5}}.}
 
 \item{sigma}{Numeric vector \eqn{(\sigma_1, \ldots, \sigma_s)} with
 \eqn{s \ge 1}.}
@@ -24,17 +24,18 @@ the estimate is to be computed.}
 \item{Ai}{Numeric matrix expecting in its i-th row \eqn{(x_i - X_1, \ldots,
 x_i - X_n)/h}, where (usually) \eqn{x_1, \ldots, x_k} with
 \eqn{k =} \code{length(x)} are the points at which the density is
-to be estimated for the data \eqn{X_1, \ldots, X_n} with \eqn{h =
-n^(-1/5)}.}
+to be estimated for the data \eqn{X_1, \ldots, X_n} with
+\eqn{h = n^{-1/5}}.}
 
 \item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in
-case of the rank-transformation method, but \eqn{(\hat \theta -
+case of the rank transformation method, but \eqn{(\hat \theta -
 X_1, \ldots, \hat \theta - X_n)} in case of the non-robust
 Srihera-Stute-method.}
 
 \item{fnx}{Numeric vector expecting \eqn{(f_n(x_1), \ldots, f_n(x_k))} with
-\eqn{(f_n(x_i) =} \code{mean(K(Ai[i,]))/h} the Parzen-Rosenblatt
-estimator at \eqn{x_i}, where typically \eqn{h = n^{(-1/5)}}.}
+\eqn{f_n(x_i)} the Parzen-Rosenblatt estimator at \eqn{x_i}, i.e.,
+\eqn{f_n(x_i) =} \code{mean(K(Ai[i,]))/h} where here typically
+\code{h} \eqn{= n^{-1/5}}.}
 
 \item{ticker}{Logical; determines if a 'ticker' documents the iteration
 progress through \code{sigma}. Defaults to FALSE.}
@@ -90,15 +91,14 @@ increases the computational efficiency.
 \details{
 The computational procedure in this function can be highly iterative because
 for each point in \code{x} (and hence for each row of matrix \code{Ai}) the
-MSE estimator is computed as a function of \eqn{\sigma} on a - usually fine -
+MSE estimator is computed as a function of \eqn{\sigma} on a (usually fine)
 \eqn{\sigma}-grid provided through \code{sigma}. This happens by repeated
 calls to \code{\link{bias_AND_scaledvar}()}. The minimization in \eqn{\sigma}
 is then performed by \code{\link{minimize_MSEHat}()} using both a discrete
 grid-search and the numerical optimization routine implemented in base R's
-\code{optimize()}.
-Finally, \code{\link{compute_fnhat}()} yields the actual value of the density
-estimator for the adapted \eqn{\sigma}, i.e., for the MSE-estimator-minimizing
-\eqn{\sigma}.
+\code{optimize()}. Finally, \code{\link{compute_fnhat}()} yields the actual
+value of the density estimator for the adapted \eqn{\sigma}, i.e., for the
+MSE-estimator-minimizing \eqn{\sigma}.
 (If necessary the computation over the \eqn{\sigma}-grid is repeated after
 extending the range of the grid until the estimator functions for both bias
 and variance are \emph{not constant} across the \eqn{\sigma}-grid.)
@@ -107,11 +107,11 @@ and variance are \emph{not constant} across the \eqn{\sigma}-grid.)
 \dontrun{
 require(stats)
 
- # Kernel adaptive density estimators for simulated N(0,1)-data computed
- # on an x-grid using the rank-transformation and the non-robust method:
+ # Kernel adaptive density estimators for simulated N(0,1)-data
+ # computed on an x-grid using the rank transformation and the
+ # non-robust method:
 set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
-x <- seq(-4, 4, by = 0.5)
-Sigma <- seq(0.01, 10, length = 51)
+x <- seq(-4, 4, by = 0.5);     Sigma <- seq(0.01, 10, length = 51)
 h <- n^(-1/5)
 
 x.X_h <- outer(x/h, Xdata/h, "-")
@@ -122,8 +122,8 @@ theta.X <- mean(Xdata) - Xdata
 adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
   Ai = x.X_h, Bj = theta.X, fnx = fnx, ticker = TRUE, plot = TRUE)
 
- # rank-transformation-based method (requires sorted data):
-negJ <- -J_admissible(1:n / n)   # rank-trafo
+ # rank transformation-based method (requires sorted data):
+negJ <- -J_admissible(1:n / n)   # rank trafo
 adaptive_fnhat(x = x, data = Xdata, K = dnorm, h = h, sigma = Sigma,
   Ai = x.X_h, Bj = negJ, fnx = fnx, ticker = TRUE, plot = TRUE)
 }

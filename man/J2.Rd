@@ -18,7 +18,7 @@ Vector of same length and mode as \code{u}.
 Eq. (20) in Eichner (2017) (based on "Bronstein's formula for k = 3")
 }
 \details{
-\eqn{J_2(u, c) = 2\sqrt(-p_c) * sin{1/3 * arcsin{q_c(u) / (-p_c)^(3/2)}}}
+\eqn{J_2(u, c) = 2\sqrt(-p_c) * sin(1/3 * arcsin(q_c(u) / (-p_c)^{3/2}))}
 
 For implementation details of \eqn{q_c(u)} and \eqn{p_c} see
 \code{\link{qc}} and \code{\link{pc}}, respectively.

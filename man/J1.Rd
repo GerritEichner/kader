@@ -22,8 +22,8 @@ Using, for brevity's sake, \eqn{J_{1a}(u, c) := -q_c(u)} and
 \eqn{J_{1b}(u, c) := J_{1a}(u, c)^2 + p_c^3}, the definition of
 \eqn{J_1} reads:
 
-\eqn{J_1(u, c) :=   [J_{1a}(u, c) + \sqrt(J_{1b}(u, c))]^(1/3)
-                  + [J_{1a}(u, c) - \sqrt(J_{1b}(u, c))]^(1/3)}.
+\eqn{J_1(u, c) :=   [J_{1a}(u, c) + \sqrt(J_{1b}(u, c))]^{1/3}
+                  + [J_{1a}(u, c) - \sqrt(J_{1b}(u, c))]^{1/3}}.
 
 For implementation details of \eqn{q_c(u)} and \eqn{p_c} see
 \code{\link{qc}} and \code{\link{pc}}, respectively.

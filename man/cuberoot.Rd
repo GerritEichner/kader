@@ -13,7 +13,7 @@ cuberoot(x)
 Vector of same length and mode as input.
 }
 \description{
-Computes \eqn{(x_1^(1/3), \ldots, x_n^(1/3))} with \eqn{x_i^(1/3)} being
+Computes \eqn{(x_1^{1/3}, \ldots, x_n^{1/3})} with \eqn{x_i^{1/3}} being
 negative if \eqn{x_i < 0}.
 }
 \examples{

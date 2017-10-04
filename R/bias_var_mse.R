@@ -5,7 +5,7 @@
 ### the estimators of bias, scaled variance and  mse for "Kernel adjusted
 ### density estimation" of Srihera & Stute (2011) and for "Rank Transformations
 ### in Kernel Density Estimation" of Eichner & Stute (2013).
-### R 3.4.1, 13./14./17.2./21./22./23.8./28.9.2017 (6./7./10.2.2015 /
+### R 3.4.2, 13./14./17.2./21./22./23.8./28.9./4.10.2017 (6./7./10.2.2015 /
 ###  21./24./26./28./31.10./2./4./9.11./5.12.2016)
 ###*****************************************************************************
 
@@ -56,24 +56,27 @@ kfn_vectorized <- function(u, K, xixj, h, sig) {
 #' ``Workhorse'' function for vectorized (in \eqn{\sigma}) computation of both
 #' the bias estimator and the scaled variance estimator of eq. (2.3) in Srihera
 #' & Stute (2011), and for the analogous computation of the bias and scaled
-#' variance estimator for the rank-transformation method in the paragraph
+#' variance estimator for the rank transformation method in the paragraph
 #' after eq. (6) in Eichner & Stute (2013).
+#'
+#' Pre-computed \eqn{f_n(x_0) is expected for efficiency reasons (and is
+#' currently prepared in function \code{adaptive_fnhat}).
 #'
 #' @param sigma Numeric vector \eqn{(\sigma_1, \ldots, \sigma_s)} with
 #'              \eqn{s \ge 1}.
 #' @param Ai Numeric vector expecting \eqn{(x_0 - X_1, \ldots, x_0 - X_n) / h},
 #'           where (usually) \eqn{x_0} is the point at which the density is to
 #'           be estimated for the data \eqn{X_1, \ldots, X_n} with
-#'           \eqn{h = n^(-1/5)}.
+#'           \eqn{h = n^{-1/5}}.
 #' @param Bj Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} in case
-#'           of the rank-transformation method, but \eqn{(\hat{\theta} - X_1,
+#'           of the rank transformation method, but \eqn{(\hat{\theta} - X_1,
 #'           \ldots, \hat{\theta} - X_n)} in case of the non-robust
 #'           Srihera-Stute-method. (Note that this the same as argument
 #'           \code{Bj} of \code{\link{adaptive_fnhat}}!)
-#' @param h Numeric scalar, where (usually) \eqn{h = n^(-1/5)}.
+#' @param h Numeric scalar, where (usually) \eqn{h = n^{-1/5}}.
 #' @param K Kernel function with vectorized in- & output.
-#' @param fnx \eqn{f_n(x_0) =} \code{mean(K(Ai))/h}, where typically
-#'            \eqn{h = n^{(-1/5)}}.
+#' @param fnx \eqn{f_n(x_0) =} \code{mean(K(Ai))/h}, where here typically
+#'            \eqn{h = n^{-1/5}}.
 #' @param ticker Logical; determines if a 'ticker' documents the iteration
 #'               progress through \code{sigma}. Defaults to FALSE.
 #'
@@ -98,8 +101,8 @@ kfn_vectorized <- function(u, K, xixj, h, sig) {
 #' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
-#'  # rank-transformation-based method (requires sorted data):
-#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#'  # rank transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank trafo
 #' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
@@ -171,8 +174,8 @@ bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
 #' kader:::mse_hat(sigma = Sigma, Ai = Ai, Bj = theta.X,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
-#'  # rank-transformation-based method (requires sorted data):
-#' negJ <- -J_admissible(1:n / n)   # rank-trafo
+#'  # rank transformation-based method (requires sorted data):
+#' negJ <- -J_admissible(1:n / n)   # rank trafo
 #' kader:::mse_hat(sigma = Sigma, Ai = Ai, Bj = negJ,
 #'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
 #'

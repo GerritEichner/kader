@@ -19,10 +19,10 @@ the estimator.}
 \item{h}{Numeric scalar for bandwidth \eqn{h}.}
 
 \item{Bj}{Numeric vector expecting \eqn{(-J(1/n), \ldots, -J(n/n))} as
-produced in \code{\link{fnhat_SS2011}} in case of the
-rank-transformation method (using an admissible rank-transformation
+produced in \code{\link{fnhat_SS2011}} in case of the rank
+transformation method (using an admissible rank transformation
 as implemented by \code{\link{J_admissible}}), but
-\eqn{(\hat \theta - X_1, \ldots, \hat \theta - X_n)} as produced
+\eqn{(\hat \theta - X_1}, \ldots, \eqn{\hat \theta - X_n)} as produced
 in \code{\link{fnhat_ES2013}} in case of the non-robust method.}
 
 \item{sigma}{Numeric scalar for value of scale parameter \eqn{\sigma}.}
@@ -40,7 +40,7 @@ A numeric vector of the same length as \code{x} with the estimated
 Implementation of both eq. (1.6) in Srihera & Stute (2011) for given and
 fixed scalars \eqn{\sigma} and \eqn{\theta}, and eq. (4) in Eichner & Stute
 (2013) for a given and fixed scalar \eqn{\sigma} and for a given and fixed
-rank-transformation (and, of course, for fixed and given location(s) in
+rank transformation (and, of course, for fixed and given location(s) in
 \eqn{x}, data \eqn{(X_1, \ldots, X_n)}, a kernel function \eqn{K} and a
 bandwidth \eqn{h}). The formulas that the computational version implemented
 here is based upon are given in eq. (15.3) and eq. (15.9), respectively, of
@@ -48,19 +48,19 @@ Eichner (2017). This function rests on preparatory computations done in
 \code{\link{fnhat_SS2011}} or \code{\link{fnhat_ES2013}}.
 }
 \note{
-In case of the rank-transformation method the data are expected to
+In case of the rank transformation method the data are expected to
       be sorted in increasing order.
 }
 \examples{
 require(stats)
 
  # The kernel density estimators for simulated N(0,1)-data and a single
- # sigma-value evaluated on a grid using the rank-transformation and
+ # sigma-value evaluated on a grid using the rank transformation and
  # the non-robust method:
 set.seed(2017);     n <- 100;     Xdata <- rnorm(n)
 xgrid <- seq(-4, 4, by = 0.1)
-negJ <- -J_admissible(1:n / n)   # rank-trafo
-compute_fnhat(x = xgrid, data = sort(Xdata),   # requires sorted data
+negJ <- -J_admissible(1:n / n)                 # The rank trafo requires
+compute_fnhat(x = xgrid, data = sort(Xdata),   # sorted data!
   K = dnorm, h = n^(-1/5), Bj = negJ, sigma = 1)
 
 theta.X <- mean(Xdata) - Xdata    # non-robust method
@@ -70,5 +70,5 @@ compute_fnhat(x = xgrid, data = Xdata, K = dnorm, h = n^(-1/5),
 }
 \references{
 Srihera & Stute (2011), Eichner and Stute (2013), and Eichner
-            (2017): see \link{kader}.
+            (2017): see \code{\link{kader}}.
 }
