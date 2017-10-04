@@ -59,7 +59,7 @@ kfn_vectorized <- function(u, K, xixj, h, sig) {
 #' variance estimator for the rank transformation method in the paragraph
 #' after eq. (6) in Eichner & Stute (2013).
 #'
-#' Pre-computed \eqn{f_n(x_0) is expected for efficiency reasons (and is
+#' Pre-computed \eqn{f_n(x_0)} is expected for efficiency reasons (and is
 #' currently prepared in function \code{adaptive_fnhat}).
 #'
 #' @param sigma Numeric vector \eqn{(\sigma_1, \ldots, \sigma_s)} with
@@ -90,21 +90,19 @@ kfn_vectorized <- function(u, K, xixj, h, sig) {
 #' require(stats)
 #'
 #' set.seed(2017);     n <- 100;     Xdata <- sort(rnorm(n))
-#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 11)
+#' x0 <- 1;      Sigma <- seq(0.01, 10, length = 21)
 #'
 #' h <- n^(-1/5)
 #' Ai <- (x0 - Xdata)/h
 #' fnx0 <- mean(dnorm(Ai)) / h   # Parzen-Rosenblatt estimator at x0.
 #'
 #'  # non-robust method:
-#' theta.X <- mean(Xdata) - Xdata
-#' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = theta.X,
-#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#' Bj <- mean(Xdata) - Xdata
+#' # # rank transformation-based method (requires sorted data):
+#' # Bj <- -J_admissible(1:n / n)   # rank trafo
 #'
-#'  # rank transformation-based method (requires sorted data):
-#' negJ <- -J_admissible(1:n / n)   # rank trafo
-#' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = negJ,
-#'   h = h, K = dnorm, fnx = fnx0, ticker = TRUE)
+#' kader:::bias_AND_scaledvar(sigma = Sigma, Ai = Ai, Bj = Bj, h = h,
+#'   K = dnorm, fnx = fnx0, ticker = TRUE)
 #'
 bias_AND_scaledvar <- function(sigma, Ai, Bj, h, K, fnx, ticker = FALSE) {
   nr <- length(Ai)

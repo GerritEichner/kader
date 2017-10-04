@@ -1,7 +1,7 @@
 ---
 title: "cran-comments.md"
 author: "Gerrit Eichner"
-date: "October 2, 2017"
+date: "October 4, 2017"
 output:
   pdf_document: default
   html_document: default

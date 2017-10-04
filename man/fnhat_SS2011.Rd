@@ -81,8 +81,7 @@ matplot(x = xgrid, y = ymat, type = "l", lty = 1, col = 3:6,
   ylim = range(0, dnorm(0), ymat), main = "", xlab = "", ylab = "Density")
 curve(dnorm, add = TRUE);   rug(d, col = "red")
 legend("topleft", lty = 1, col = c("black", "red", NA), bty = "n",
-  legend = expression(phi, "data",
-    paste(tilde(f)[n], " (in other colors)"))) }
+  legend = expression(phi, "data", tilde(f)[n]~"in other colors")) }
 \donttest{
  # Old-Faithful-eruptions-data and several sigma-values
 d <- faithful$eruptions;     n <- length(d);     er <- extendrange(d)
@@ -96,8 +95,7 @@ plot(dfit, ylim = range(0, dfit$y, ymat), main = "", xlab = "")
 rug(d, col = "red")
 matlines(x = xgrid, y = ymat, lty = 1, col = 3:6)
 legend("top", lty = 1, col = c("black", "red", NA), bty = "n",
-  legend = expression("R's est.", "data",
-    paste(tilde(f)[n], " (in other colors)"))) }
+  legend = expression("R's est.", "data", tilde(f)[n]~"in other colors")) }
 }
 \references{
 Srihera & Stute (2011) and Eichner (2017): see \link{kader}.
